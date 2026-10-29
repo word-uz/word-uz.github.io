@@ -323,7 +323,8 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
   <button data-f="close"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Orqaga</button>
   <button data-f="new"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v4h4M12 10v7M8.5 13.5h7"/></svg>Yangi</button>
   <button data-f="open"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3zM3 7V5h6"/></svg>Ochish</button>
-  <button data-f="docx"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7"/></svg>Saqlash (.docx)</button>
+  <button data-f="save"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7"/></svg>Saqlash (Ctrl+S)</button>
+  <button data-f="docx"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7"/></svg>Word uchun nusxa (.docx)</button>
   <button data-f="pdf"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v4h4M9 13h6M9 17h6"/></svg>PDF qilib saqlash</button>
   <button data-f="html"><svg viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>Veb sahifa (.html)</button>
   <button data-f="txt"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 10h6M9 14h6M9 18h4"/></svg>Oddiy matn (.txt)</button>
@@ -507,8 +508,8 @@ function blocksToDocx(D,parent,out,lvl=0){
    out.push(new D.Paragraph({...paraOpts(D,n),children:runs}));continue}
   const runs=inlineRuns(D,{childNodes:[n]},n.parentElement||doc,[]);if(runs.length)out.push(new D.Paragraph({children:runs}))}
  return out}
-async function saveDocx(){toast('.docx tayyorlanmoqda…');let D;
- try{await loadJS('https://cdn.jsdelivr.net/npm/docx@9.0.2/build/index.umd.js');D=window.docx}catch(e){toast('Internet kerak: .docx yaratib bo\'lmadi. HTML yoki PDF qilib saqlang.');return}
+async function buildDocx(){let D;
+ try{await loadJS('https://cdn.jsdelivr.net/npm/docx@9.0.2/build/index.umd.js');D=window.docx}catch(e){toast('Internet kerak: .docx yaratib bo\'lmadi. HTML yoki PDF qilib saqlang.');return null}
  try{if(selImg)selImg.classList.remove('sel');olInst=0;
   const kids=blocksToDocx(D,doc,[]);if(selImg)selImg.classList.add('sel');
   const tw=mm=>Math.round(mm*56.6929);const[sw,sh]=SIZES[st.size];const[t,r,b,l]=st.m;
@@ -519,15 +520,33 @@ async function saveDocx(){toast('.docx tayyorlanmoqda…');let D;
    sections:[{properties:{page:{size:{width:tw(sw),height:tw(sh),orientation:st.ori==='l'?D.PageOrientation.LANDSCAPE:D.PageOrientation.PORTRAIT},margin:{top:tw(t),right:tw(r),bottom:tw(b),left:tw(l)}},column:st.cols>1?{count:st.cols,space:tw(12)}:undefined},
     footers:st.pn?{default:new D.Footer({children:[new D.Paragraph({alignment:D.AlignmentType.CENTER,children:[new D.TextRun({children:[D.PageNumber.CURRENT],font:'Times New Roman',size:22})]})]})}:undefined,
     children:kids.length?kids:[new D.Paragraph('')]}]});
-  const blob=await D.Packer.toBlob(d);download(blob,fname('.docx'));store();toast('Saqlandi: '+fname('.docx'))}
- catch(e){console.error(e);toast('.docx yaratishda xato: '+e.message)}}
+  return await D.Packer.toBlob(d)}
+ catch(e){console.error(e);toast('.docx yaratishda xato: '+e.message);return null}}
+async function saveDocx(){toast('.docx tayyorlanmoqda…');const b=await buildDocx();if(b){download(b,fname('.docx'));store();toast('Saqlandi: '+fname('.docx'))}}
+/* Hujjat Pro o'z formati (.hujjat): HTML + sahifa sozlamalari, hech narsa yo'qolmaydi */
+function hujjatBlob(){const c=doc.cloneNode(true);c.querySelectorAll('img.sel').forEach(i=>i.classList.remove('sel'));const meta=JSON.stringify(st).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+ return new Blob([`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="hujjat-st" content="${meta}"><title>${$('#docTitle').value.replace(/</g,'&lt;')}</title><style>${docCSS()}</style></head><body>${c.innerHTML.replace(/\u200B/g,'')}</body></html>`],{type:'text/html'})}
+/* faylga to'g'ridan-to'g'ri saqlash (Word'dagidek Ctrl+S) */
+let fileHandle=null;
+async function saveFile(){
+ if(fileHandle){const n=fileHandle.name.toLowerCase();const blob=n.endsWith('.docx')?await buildDocx():n.endsWith('.txt')?new Blob([doc.innerText.replace(/\u200B/g,'')],{type:'text/plain'}):hujjatBlob();if(!blob)return;
+  try{if(fileHandle.queryPermission&&(await fileHandle.queryPermission({mode:'readwrite'}))!=='granted'&&(await fileHandle.requestPermission({mode:'readwrite'}))!=='granted')throw new Error('ruxsat');
+   const w=await fileHandle.createWritable();await w.write(blob);await w.close();store();$('#saved').textContent='Saqlandi';toast('Saqlandi: '+fileHandle.name);return}
+  catch(e){toast('Faylga yozib bo\'lmadi — nusxasi yuklab olinadi');fileHandle=null}}
+ if(window.showSaveFilePicker){try{fileHandle=await showSaveFilePicker({suggestedName:fname('.docx'),types:[{description:'Word hujjati (.docx)',accept:{'application/vnd.openxmlformats-officedocument.wordprocessingml.document':['.docx']}},{description:'Hujjat Pro hujjati (.hujjat)',accept:{'application/x-hujjat':['.hujjat']}}]});
+   setFileTitle();return saveFile()}catch(e){if(e.name==='AbortError')return}}
+ saveDocx()}
+function setFileTitle(){if(fileHandle){$('#docTitle').value=fileHandle.name.replace(/\.[^.]+$/,'');document.title=fileHandle.name+' — Hujjat Pro'}}
+async function openDialog(){if(window.showOpenFilePicker){try{const[h]=await showOpenFilePicker({types:[{description:'Hujjatlar',accept:{'application/vnd.openxmlformats-officedocument.wordprocessingml.document':['.docx'],'application/x-hujjat':['.hujjat'],'text/html':['.html','.htm'],'text/plain':['.txt']}}]});openFile(await h.getFile(),h)}catch(e){}return}$('#fOpen').click()}
 function saveHTML(){download(new Blob([`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${$('#docTitle').value}</title><style>${docCSS()}</style></head><body>${cleanHTML()}</body></html>`],{type:'text/html'}),fname('.html'))}
 function saveTXT(){download(new Blob([doc.innerText.replace(/​/g,'')],{type:'text/plain;charset=utf-8'}),fname('.txt'))}
-async function openFile(f){const n=f.name.toLowerCase();try{
- if(n.endsWith('.docx')){toast('Ochilmoqda…');await loadJS('https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js');const r=await mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()});doc.innerHTML=r.value||'<p><br></p>'}
+async function openFile(f,handle){const n=f.name.toLowerCase();try{
+ if(!f.size){doc.innerHTML='<p><br></p>'}
+ else if(n.endsWith('.docx')){toast('Ochilmoqda…');await loadJS('https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js');const r=await mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()});doc.innerHTML=r.value||'<p><br></p>'}
  else if(n.endsWith('.txt')){const t=await f.text();doc.innerHTML=t.split(/\r?\n/).map(l=>'<p>'+(l.replace(/&/g,'&amp;').replace(/</g,'&lt;')||'<br>')+'</p>').join('')}
- else{const t=await f.text();const d=new DOMParser().parseFromString(t,'text/html');d.querySelectorAll('script,style,meta,link').forEach(x=>x.remove());doc.innerHTML=d.body.innerHTML}
- $('#docTitle').value=f.name.replace(/\.[^.]+$/,'');closeBack();changed();toast('Ochildi: '+f.name)}catch(e){toast('Faylni ochib bo\'lmadi (.docx uchun internet kerak)')}}
+ else{const t=await f.text();const d=new DOMParser().parseFromString(t,'text/html');const m=d.querySelector('meta[name="hujjat-st"]');if(m){try{Object.assign(st,JSON.parse(m.content));applyPage();setZoom(st.zoom)}catch(_){}}
+  d.querySelectorAll('script,style,meta,link').forEach(x=>x.remove());doc.innerHTML=d.body.innerHTML||'<p><br></p>'}
+ fileHandle=handle||null;$('#docTitle').value=f.name.replace(/\.[^.]+$/,'');setFileTitle();closeBack();changed();toast('Ochildi: '+f.name)}catch(e){toast('Faylni ochib bo\'lmadi (.docx uchun internet kerak)')}}
 
 /* ---------- topish / almashtirish ---------- */
 function openFind(rep){$('#findBox').classList.add('show');$('#fRep').style.display=rep?'':'none';$('#fOne').style.display=$('#fAll').style.display=rep?'':'none';$('#fTitle').textContent=rep?'Almashtirish':'Topish';const t=getSelection().toString();if(t&&t.length<80)$('#fFind').value=t;$('#fFind').focus();$('#fFind').select()}
@@ -654,12 +673,12 @@ $('#tpls').addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)
  doc.innerHTML=TPL[c.dataset.tpl];$('#docTitle').value=c.dataset.tpl==="Bo'sh hujjat"?'Hujjat1':c.dataset.tpl;closeBack();changed();doc.focus()});
 function openBack(){$('#back').classList.add('show')}function closeBack(){$('#back').classList.remove('show')}
 $('#back nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const f=b.dataset.f;
- if(f==='close')closeBack();if(f==='new')$('#tpls').scrollIntoView();if(f==='open')$('#fOpen').click();if(f==='docx'){closeBack();saveDocx()}
+ if(f==='close')closeBack();if(f==='new')$('#tpls').scrollIntoView();if(f==='open')openDialog();if(f==='save'){closeBack();saveFile()}if(f==='docx'){closeBack();saveDocx()}
  if(f==='pdf'||f==='print'){closeBack();if(f==='pdf')toast('Chop etish oynasida «PDF sifatida saqlash» ni tanlang');setTimeout(()=>window.print(),300)}
  if(f==='html'){saveHTML();closeBack()}if(f==='txt'){saveTXT();closeBack()}});
 
 /* sarlavha tugmalari */
-$('#qSave').onclick=()=>saveDocx();$('#qUndo').onclick=()=>{restoreSel();document.execCommand('undo');changed()};$('#qRedo').onclick=()=>{restoreSel();document.execCommand('redo');changed()};
+$('#qSave').onclick=()=>saveFile();$('#qUndo').onclick=()=>{restoreSel();document.execCommand('undo');changed()};$('#qRedo').onclick=()=>{restoreSel();document.execCommand('redo');changed()};
 $('#docTitle').addEventListener('change',store);
 $('#zRange').oninput=e=>setZoom(+e.target.value);$('#zIn').onclick=()=>setZoom(st.zoom+10);$('#zOut').onclick=()=>setZoom(st.zoom-10);
 
@@ -678,7 +697,7 @@ doc.addEventListener('keydown',e=>{
  if(!doc.textContent.trim()&&!doc.querySelector('img,table,hr')&&(e.key==='Backspace'||e.key==='Delete')){e.preventDefault();doc.innerHTML='<p><br></p>'}
 });
 document.addEventListener('keydown',e=>{const c=e.ctrlKey||e.metaKey;if(!c)return;const k=e.key.toLowerCase();
- const map={s:()=>saveDocx(),p:()=>window.print(),f:()=>openFind(false),h:()=>openFind(true),l:CMD.justifyLeft,e:CMD.justifyCenter,r:CMD.justifyRight,j:CMD.justifyFull,']':CMD.grow,'[':CMD.shrink,o:()=>$('#fOpen').click(),k:CMD.link};
+ const map={s:()=>saveFile(),p:()=>window.print(),f:()=>openFind(false),h:()=>openFind(true),l:CMD.justifyLeft,e:CMD.justifyCenter,r:CMD.justifyRight,j:CMD.justifyFull,']':CMD.grow,'[':CMD.shrink,o:()=>openDialog(),k:CMD.link};
  if(e.shiftKey&&k==='>'){e.preventDefault();CMD.grow();return}if(e.shiftKey&&k==='<'){e.preventDefault();CMD.shrink();return}
  if(map[k]&&!(k==='f'&&e.target.closest('#findBox'))){e.preventDefault();saveSel();map[k]();updateUI()}});
 addEventListener('beforeunload',store);
@@ -699,7 +718,7 @@ addEventListener('appinstalled',()=>{ib.style.display='none';instEvt=null;toast(
 ib.onclick=async()=>{if(instEvt){instEvt.prompt();const r=await instEvt.userChoice;if(r.outcome==='accepted')ib.style.display='none';instEvt=null}
  else if(isIOS)alert('iPhone/iPad: pastdagi «Ulashish» tugmasini bosing → «Bosh ekranga qo\'shish» ni tanlang.');
  else alert('Brauzer manzil qatoridagi o\'rnatish belgisini bosing yoki menyu (⋮) → «Ilovani o\'rnatish» / «Install Hujjat Pro» ni tanlang.')};
-if('launchQueue' in window)launchQueue.setConsumer(async p=>{if(p.files&&p.files.length){const f=await p.files[0].getFile();openFile(f)}});
+if('launchQueue' in window)launchQueue.setConsumer(async p=>{if(p.files&&p.files.length){const h=p.files[0];openFile(await h.getFile(),h)}});
 doc.focus();const r0=document.createRange();r0.selectNodeContents(doc);r0.collapse(false);getSelection().removeAllRanges();getSelection().addRange(r0);saveSel();updateUI();
 </script>
 </body>
