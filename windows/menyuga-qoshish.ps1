@@ -30,18 +30,26 @@ if (-not $cmd) {
 if (-not (Test-Path $icon)) { Write-Host "Ikonka topilmadi: $icon" -ForegroundColor Yellow }
 
 $root = "HKCU:\Software\Classes"
-New-Item -Path "$root\.hujjat" -Force | Out-Null
+# kalit bo'lmasa yaratadi; borini o'chirib yubormaydi (New-Item -Force ichidagi hamma narsani o'chiradi)
+function Ensure-Key($k) { if (-not (Test-Path $k)) { New-Item -Path $k -Force | Out-Null } }
+Ensure-Key "$root\.hujjat"
 Set-Item -Path "$root\.hujjat" -Value $progId
 New-ItemProperty -Path "$root\.hujjat" -Name "Content Type" -Value "application/x-hujjat" -Force | Out-Null
-New-Item -Path "$root\.hujjat\ShellNew" -Force | Out-Null
+Ensure-Key "$root\.hujjat\ShellNew"
 New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "NullFile" -Value "" -Force | Out-Null
 New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "IconPath" -Value "$icon,0" -Force | Out-Null
 
-New-Item -Path "$root\$progId" -Force | Out-Null
+# "Открыть с помощью" ro'yxatiga Microsoft Word'ni ham qo'shamiz (.hujjat ichida haqiqiy .docx bor)
+if (Test-Path "Registry::HKEY_CLASSES_ROOT\Word.Document.12") {
+  Ensure-Key "$root\.hujjat\OpenWithProgids"
+  New-ItemProperty -Path "$root\.hujjat\OpenWithProgids" -Name "Word.Document.12" -Value "" -PropertyType String -Force | Out-Null
+}
+
+Ensure-Key "$root\$progId"
 Set-Item -Path "$root\$progId" -Value $label
-New-Item -Path "$root\$progId\DefaultIcon" -Force | Out-Null
+Ensure-Key "$root\$progId\DefaultIcon"
 Set-Item -Path "$root\$progId\DefaultIcon" -Value "$icon,0"
-New-Item -Path "$root\$progId\shell\open\command" -Force | Out-Null
+Ensure-Key "$root\$progId\shell\open\command"
 Set-Item -Path "$root\$progId\shell\open" -Value "Ochish"
 Set-Item -Path "$root\$progId\shell\open\command" -Value $cmd
 

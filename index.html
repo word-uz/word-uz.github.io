@@ -520,16 +520,25 @@ async function buildDocx(){let D;
    sections:[{properties:{page:{size:{width:tw(sw),height:tw(sh),orientation:st.ori==='l'?D.PageOrientation.LANDSCAPE:D.PageOrientation.PORTRAIT},margin:{top:tw(t),right:tw(r),bottom:tw(b),left:tw(l)}},column:st.cols>1?{count:st.cols,space:tw(12)}:undefined},
     footers:st.pn?{default:new D.Footer({children:[new D.Paragraph({alignment:D.AlignmentType.CENTER,children:[new D.TextRun({children:[D.PageNumber.CURRENT],font:'Times New Roman',size:22})]})]})}:undefined,
     children:kids.length?kids:[new D.Paragraph('')]}]});
-  return await D.Packer.toBlob(d)}
+  return await embedHtml(await D.Packer.toBlob(d))}
  catch(e){console.error(e);toast('.docx yaratishda xato: '+e.message);return null}}
 async function saveDocx(){toast('.docx tayyorlanmoqda…');const b=await buildDocx();if(b){download(b,fname('.docx'));store();toast('Saqlandi: '+fname('.docx'))}}
 /* Hujjat Pro o'z formati (.hujjat): HTML + sahifa sozlamalari, hech narsa yo'qolmaydi */
-function hujjatBlob(){const c=doc.cloneNode(true);c.querySelectorAll('img.sel').forEach(i=>i.classList.remove('sel'));const meta=JSON.stringify(st).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
- return new Blob([`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="hujjat-st" content="${meta}"><title>${$('#docTitle').value.replace(/</g,'&lt;')}</title><style>${docCSS()}</style></head><body>${c.innerHTML.replace(/\u200B/g,'')}</body></html>`],{type:'text/html'})}
+function hujjatHTML(){const c=doc.cloneNode(true);c.querySelectorAll('img.sel').forEach(i=>i.classList.remove('sel'));const meta=JSON.stringify(st).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+ return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="hujjat-st" content="${meta}"><title>${$('#docTitle').value.replace(/</g,'&lt;')}</title><style>${docCSS()}</style></head><body>${c.innerHTML.replace(/\u200B/g,'')}</body></html>`}
+function hujjatBlob(){return new Blob([hujjatHTML()],{type:'text/html'})}
+/* .docx ichiga asl HTML'ni qo'shamiz: Word oddiy .docx deb ochadi, Hujjat Pro esa hech narsa yo'qotmay ochadi */
+const JSZIP='https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',DOCX_MIME='application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+async function embedHtml(blob){try{await loadJS(JSZIP);const z=await JSZip.loadAsync(blob);z.file('hujjat/content.html',hujjatHTML());
+ let ct=await z.file('[Content_Types].xml').async('string');if(!/Extension="html"/.test(ct))ct=ct.replace('<Default ','<Default Extension="html" ContentType="text/html"/><Default ');z.file('[Content_Types].xml',ct);
+ return await z.generateAsync({type:'blob',mimeType:DOCX_MIME,compression:'DEFLATE'})}catch(e){return blob}}
+async function isZip(f){const h=new Uint8Array(await f.slice(0,2).arrayBuffer());return h[0]===0x50&&h[1]===0x4B}
+function loadHTML(t){const d=new DOMParser().parseFromString(t,'text/html');const m=d.querySelector('meta[name="hujjat-st"]');if(m){try{Object.assign(st,JSON.parse(m.content));applyPage();setZoom(st.zoom)}catch(_){}}
+ d.querySelectorAll('script,style,meta,link').forEach(x=>x.remove());doc.innerHTML=d.body.innerHTML||'<p><br></p>'}
 /* faylga to'g'ridan-to'g'ri saqlash (Word'dagidek Ctrl+S) */
 let fileHandle=null;
 async function saveFile(){
- if(fileHandle){const n=fileHandle.name.toLowerCase();const blob=n.endsWith('.docx')?await buildDocx():n.endsWith('.txt')?new Blob([doc.innerText.replace(/\u200B/g,'')],{type:'text/plain'}):hujjatBlob();if(!blob)return;
+ if(fileHandle){const n=fileHandle.name.toLowerCase();const blob=n.endsWith('.txt')?new Blob([doc.innerText.replace(/\u200B/g,'')],{type:'text/plain'}):((await buildDocx())||(n.endsWith('.docx')?null:hujjatBlob()));if(!blob)return;
   try{if(fileHandle.queryPermission&&(await fileHandle.queryPermission({mode:'readwrite'}))!=='granted'&&(await fileHandle.requestPermission({mode:'readwrite'}))!=='granted')throw new Error('ruxsat');
    const w=await fileHandle.createWritable();await w.write(blob);await w.close();store();$('#saved').textContent='Saqlandi';toast('Saqlandi: '+fileHandle.name);return}
   catch(e){toast('Faylga yozib bo\'lmadi — nusxasi yuklab olinadi');fileHandle=null}}
@@ -542,10 +551,10 @@ function saveHTML(){download(new Blob([`<!DOCTYPE html><html><head><meta charset
 function saveTXT(){download(new Blob([doc.innerText.replace(/​/g,'')],{type:'text/plain;charset=utf-8'}),fname('.txt'))}
 async function openFile(f,handle){const n=f.name.toLowerCase();try{
  if(!f.size){doc.innerHTML='<p><br></p>'}
- else if(n.endsWith('.docx')){toast('Ochilmoqda…');await loadJS('https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js');const r=await mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()});doc.innerHTML=r.value||'<p><br></p>'}
+ else if(await isZip(f)){const buf=await f.arrayBuffer();let html=null;try{await loadJS(JSZIP);const z=await JSZip.loadAsync(buf);const e=z.file('hujjat/content.html');if(e)html=await e.async('string')}catch(_){}
+  if(html)loadHTML(html);else{toast('Ochilmoqda…');await loadJS('https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js');const r=await mammoth.convertToHtml({arrayBuffer:buf});doc.innerHTML=r.value||'<p><br></p>'}}
  else if(n.endsWith('.txt')){const t=await f.text();doc.innerHTML=t.split(/\r?\n/).map(l=>'<p>'+(l.replace(/&/g,'&amp;').replace(/</g,'&lt;')||'<br>')+'</p>').join('')}
- else{const t=await f.text();const d=new DOMParser().parseFromString(t,'text/html');const m=d.querySelector('meta[name="hujjat-st"]');if(m){try{Object.assign(st,JSON.parse(m.content));applyPage();setZoom(st.zoom)}catch(_){}}
-  d.querySelectorAll('script,style,meta,link').forEach(x=>x.remove());doc.innerHTML=d.body.innerHTML||'<p><br></p>'}
+ else loadHTML(await f.text());
  fileHandle=handle||null;$('#docTitle').value=f.name.replace(/\.[^.]+$/,'');setFileTitle();closeBack();changed();toast('Ochildi: '+f.name)}catch(e){toast('Faylni ochib bo\'lmadi (.docx uchun internet kerak)')}}
 
 /* ---------- topish / almashtirish ---------- */

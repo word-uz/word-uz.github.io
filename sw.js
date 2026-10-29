@@ -1,9 +1,10 @@
 // Hujjat Pro — offline ishlash uchun service worker
-const VER = 'hujjat-v2';
+const VER = 'hujjat-v3';
 const SHELL = ['./', './index.html', './favicon.svg', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 const LIBS = [
   'https://cdn.jsdelivr.net/npm/docx@9.0.2/build/index.umd.js',
-  'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js'
+  'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js',
+  'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js'
 ];
 
 self.addEventListener('install', e => {
