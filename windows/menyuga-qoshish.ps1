@@ -5,7 +5,7 @@
 $label   = "Word hujjati (Hujjat Pro)"
 $progId  = "HujjatPro.Document"
 $iconDir = Join-Path $env:LOCALAPPDATA "HujjatPro"
-$icon    = Join-Path $iconDir "hujjat.ico"
+$icon    = Join-Path $iconDir "hujjat-doc.ico"
 
 # Chrome o'rnatgan Hujjat Pro ilovasini topamiz (fayl ochish buyrug'i)
 $cmd = $null
