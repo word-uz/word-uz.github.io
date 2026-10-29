@@ -9,13 +9,19 @@ $icon    = Join-Path $iconDir "hujjat.ico"
 
 # Chrome o'rnatgan Hujjat Pro ilovasini topamiz (fayl ochish buyrug'i)
 $cmd = $null
-Get-ChildItem "HKCU:\Software\Classes" | Where-Object { $_.PSChildName -like "Chrome.*" } | ForEach-Object {
+# avval Chrome .hujjat uchun ro'yxatga olgan dasturni olamiz (ilovaning yangi versiyasi)
+$ow = Get-Item "HKCU:\Software\Classes\.hujjat\OpenWithProgids" -ErrorAction SilentlyContinue
+if ($ow) { foreach ($p in $ow.Property) {
+  $c = "HKCU:\Software\Classes\$p\shell\open\command"
+  if (Test-Path $c) { $v = (Get-Item $c).GetValue(""); if ($v -like "*Hujjat Pro*.exe*") { $cmd = $v } }
+} }
+if (-not $cmd) { Get-ChildItem "HKCU:\Software\Classes" | Where-Object { $_.PSChildName -like "Chrome.*" } | ForEach-Object {
   $c = Join-Path $_.PSPath "shell\open\command"
   if (Test-Path $c) {
     $v = (Get-ItemProperty $c).'(default)'
-    if ($v -like "*Hujjat Pro.exe*") { $cmd = $v }
+    if ($v -like "*Hujjat Pro*.exe*") { $cmd = $v }
   }
-}
+} }
 if (-not $cmd) {
   Write-Host "Hujjat Pro ilovasi topilmadi. Avval https://word-uz.github.io saytidan 'O'rnatish' tugmasi bilan o'rnating." -ForegroundColor Red
   exit 1
@@ -29,6 +35,7 @@ Set-Item -Path "$root\.hujjat" -Value $progId
 New-ItemProperty -Path "$root\.hujjat" -Name "Content Type" -Value "application/x-hujjat" -Force | Out-Null
 New-Item -Path "$root\.hujjat\ShellNew" -Force | Out-Null
 New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "NullFile" -Value "" -Force | Out-Null
+New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "IconPath" -Value "$icon,0" -Force | Out-Null
 
 New-Item -Path "$root\$progId" -Force | Out-Null
 Set-Item -Path "$root\$progId" -Value $label
