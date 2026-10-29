@@ -6,6 +6,10 @@
 <title>Hujjat Pro</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#2b579a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Hujjat Pro">
 <style id="pageCss"></style>
 <style>
 :root{--ac:#2b579a;--ac2:#1e4380;--rb:#f3f2f1;--rb2:#ffffff;--bd:#d6d6d6;--tx:#252423;--mut:#605e5c;--hov:#e1dfdd;--on:#c8c6c4;--bg:#e8e8e8}
@@ -143,6 +147,7 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
   <button class="q" id="qRedo" title="Qaytarish (Ctrl+Y)"></button>
   <input id="docTitle" value="Hujjat1" spellcheck="false" title="Hujjat nomi">
   <span id="saved">Saqlandi</span>
+  <button class="q" id="installBtn" title="Kompyuterga ilova qilib o'rnatish" style="width:auto;padding:0 12px;gap:6px;display:none;border:1px solid rgba(255,255,255,.5)"><svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>O'rnatish</button>
  </div>
  <div id="tabs">
   <button class="file" data-t="file">Fayl</button>
@@ -684,6 +689,17 @@ if(!load())doc.innerHTML='<p><br></p>';
 doc.spellcheck=st.spell;$('#spellBtn').classList.toggle('on',st.spell);document.body.classList.toggle('dark',st.dark);$('#darkBtn').classList.toggle('on',st.dark);
 applyPage();setZoom(st.zoom);
 if(window.ResizeObserver)new ResizeObserver(()=>layout()).observe(doc);
+/* ---------- ilova (PWA): o'rnatish, offline, fayllarni ochish ---------- */
+if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+let instEvt=null;const isApp=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const ib=$('#installBtn');ib.style.display=(!isApp&&isIOS)?'inline-flex':'none';
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEvt=e;if(!isApp)ib.style.display='inline-flex'});
+addEventListener('appinstalled',()=>{ib.style.display='none';instEvt=null;toast('Hujjat Pro o\'rnatildi! Ish stoli va Start menyusida bor.')});
+ib.onclick=async()=>{if(instEvt){instEvt.prompt();const r=await instEvt.userChoice;if(r.outcome==='accepted')ib.style.display='none';instEvt=null}
+ else if(isIOS)alert('iPhone/iPad: pastdagi «Ulashish» tugmasini bosing → «Bosh ekranga qo\'shish» ni tanlang.');
+ else alert('Brauzer manzil qatoridagi o\'rnatish belgisini bosing yoki menyu (⋮) → «Ilovani o\'rnatish» / «Install Hujjat Pro» ni tanlang.')};
+if('launchQueue' in window)launchQueue.setConsumer(async p=>{if(p.files&&p.files.length){const f=await p.files[0].getFile();openFile(f)}});
 doc.focus();const r0=document.createRange();r0.selectNodeContents(doc);r0.collapse(false);getSelection().removeAllRanges();getSelection().addRange(r0);saveSel();updateUI();
 </script>
 </body>

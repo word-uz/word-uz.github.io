@@ -1,0 +1,27 @@
+{
+  "name": "Hujjat Pro",
+  "short_name": "Hujjat Pro",
+  "description": "Loginsiz ishlaydigan matn muharriri: .docx ochish va saqlash, PDF, shablonlar.",
+  "lang": "uz",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e8e8e8",
+  "theme_color": "#2b579a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+        "text/plain": [".txt"],
+        "text/html": [".html", ".htm"]
+      }
+    }
+  ]
+}
