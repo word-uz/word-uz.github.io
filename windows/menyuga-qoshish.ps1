@@ -4,14 +4,12 @@
 
 $label   = "Word hujjati (Hujjat Pro)"
 $progId  = "HujjatPro.Document"
-$iconDir = Join-Path $env:LOCALAPPDATA "HujjatPro"
-$icon    = Join-Path $iconDir "hujjat-doc.ico"
 
 # Chrome o'rnatgan Hujjat Pro ilovasini topamiz (fayl ochish buyrug'i)
 $cmd = $null
 # avval allaqachon sozlangan buyruqni tekshiramiz (dastur fayli hali joyida bo'lsa, o'shani qoldiramiz)
 $cur = Get-Item "HKCU:\Software\Classes\$progId\shell\open\command" -ErrorAction SilentlyContinue
-if ($cur) { $v = $cur.GetValue(""); if ($v -match '^"([^"]+)"' -and (Test-Path $Matches[1])) { $cmd = $v } }
+if ($cur) { $v = $cur.GetValue(""); if ($v -like "*Web Applications*" -and $v -match '^"([^"]+)"' -and (Test-Path $Matches[1])) { $cmd = $v } }
 # avval Chrome .hujjat uchun ro'yxatga olgan dasturni olamiz (ilovaning yangi versiyasi)
 $ow = Get-Item "HKCU:\Software\Classes\.hujjat\OpenWithProgids" -ErrorAction SilentlyContinue
 if (-not $cmd -and $ow) { foreach ($p in $ow.Property) {
@@ -30,7 +28,10 @@ if (-not $cmd) {
   exit 1
 }
 
-if (-not (Test-Path $icon)) { Write-Host "Ikonka topilmadi: $icon" -ForegroundColor Yellow }
+# Logo: Chrome ilova bilan birga yaratgan .ico (Explorer va "Создать" menyusi uni to'g'ri ko'rsatadi)
+$cmd -match '^"([^"]+)"' | Out-Null
+$icon = (Get-ChildItem (Split-Path $Matches[1]) -Filter *.ico -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
+if (-not $icon) { Write-Host "Ilova ikonkasi topilmadi" -ForegroundColor Yellow; $icon = $Matches[1] }
 
 $root = "HKCU:\Software\Classes"
 # kalit bo'lmasa yaratadi; borini o'chirib yubormaydi (New-Item -Force ichidagi hamma narsani o'chiradi)
@@ -40,7 +41,7 @@ Set-Item -Path "$root\.hujjat" -Value $progId
 New-ItemProperty -Path "$root\.hujjat" -Name "Content Type" -Value "application/x-hujjat" -Force | Out-Null
 Ensure-Key "$root\.hujjat\ShellNew"
 New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "NullFile" -Value "" -Force | Out-Null
-New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "IconPath" -Value "$icon,0" -Force | Out-Null
+Remove-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "IconPath" -ErrorAction SilentlyContinue
 
 # Boshqa ProgID'lar (Chrome, Word) .hujjat ikonkasini bo'sh qilib qo'yadi, shuning uchun ularni olib tashlaymiz
 $ow = Get-Item "$root\.hujjat\OpenWithProgids" -ErrorAction SilentlyContinue
