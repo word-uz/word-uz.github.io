@@ -9,17 +9,20 @@ $icon    = Join-Path $iconDir "hujjat.ico"
 
 # Chrome o'rnatgan Hujjat Pro ilovasini topamiz (fayl ochish buyrug'i)
 $cmd = $null
+# avval allaqachon sozlangan buyruqni tekshiramiz (dastur fayli hali joyida bo'lsa, o'shani qoldiramiz)
+$cur = Get-Item "HKCU:\Software\Classes\$progId\shell\open\command" -ErrorAction SilentlyContinue
+if ($cur) { $v = $cur.GetValue(""); if ($v -match '^"([^"]+)"' -and (Test-Path $Matches[1])) { $cmd = $v } }
 # avval Chrome .hujjat uchun ro'yxatga olgan dasturni olamiz (ilovaning yangi versiyasi)
 $ow = Get-Item "HKCU:\Software\Classes\.hujjat\OpenWithProgids" -ErrorAction SilentlyContinue
-if ($ow) { foreach ($p in $ow.Property) {
+if (-not $cmd -and $ow) { foreach ($p in $ow.Property) {
   $c = "HKCU:\Software\Classes\$p\shell\open\command"
-  if (Test-Path $c) { $v = (Get-Item $c).GetValue(""); if ($v -like "*Hujjat Pro*.exe*") { $cmd = $v } }
+  if (Test-Path $c) { $v = (Get-Item $c).GetValue(""); if ($v -like "*Hujjat Pro*.exe*" -and $v -match '^"([^"]+)"' -and (Test-Path $Matches[1])) { $cmd = $v } }
 } }
 if (-not $cmd) { Get-ChildItem "HKCU:\Software\Classes" | Where-Object { $_.PSChildName -like "Chrome.*" } | ForEach-Object {
   $c = Join-Path $_.PSPath "shell\open\command"
   if (Test-Path $c) {
     $v = (Get-ItemProperty $c).'(default)'
-    if ($v -like "*Hujjat Pro*.exe*") { $cmd = $v }
+    if ($v -like "*Hujjat Pro*.exe*" -and $v -match '^"([^"]+)"' -and (Test-Path $Matches[1])) { $cmd = $v }
   }
 } }
 if (-not $cmd) {
@@ -39,11 +42,11 @@ Ensure-Key "$root\.hujjat\ShellNew"
 New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "NullFile" -Value "" -Force | Out-Null
 New-ItemProperty -Path "$root\.hujjat\ShellNew" -Name "IconPath" -Value "$icon,0" -Force | Out-Null
 
-# "Открыть с помощью" ro'yxatiga Microsoft Word'ni ham qo'shamiz (.hujjat ichida haqiqiy .docx bor)
-if (Test-Path "Registry::HKEY_CLASSES_ROOT\Word.Document.12") {
-  Ensure-Key "$root\.hujjat\OpenWithProgids"
-  New-ItemProperty -Path "$root\.hujjat\OpenWithProgids" -Name "Word.Document.12" -Value "" -PropertyType String -Force | Out-Null
-}
+# Boshqa ProgID'lar (Chrome, Word) .hujjat ikonkasini bo'sh qilib qo'yadi, shuning uchun ularni olib tashlaymiz
+$ow = Get-Item "$root\.hujjat\OpenWithProgids" -ErrorAction SilentlyContinue
+if ($ow) { foreach ($p in $ow.Property) { if ($p -ne $progId) { Remove-ItemProperty -Path "$root\.hujjat\OpenWithProgids" -Name $p -ErrorAction SilentlyContinue } } }
+# "Открыть с помощью" ro'yxatiga Microsoft Word (.hujjat ichida haqiqiy .docx bor); bu ikonkaga ta'sir qilmaydi
+if (Test-Path "Registry::HKEY_CLASSES_ROOT\Applications\WINWORD.EXE") { Ensure-Key "$root\.hujjat\OpenWithList\WINWORD.EXE" }
 
 Ensure-Key "$root\$progId"
 Set-Item -Path "$root\$progId" -Value $label
