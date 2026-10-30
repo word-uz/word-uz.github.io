@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Hujjat Pro</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#2b579a">
@@ -136,6 +136,48 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
  #doc .pb{border:0;margin:0}#doc .pb::after{display:none}
  #doc img.sel{outline:0}
 }
+
+/* ===== Ekranga moslashish: telefon, planshet, kompyuter, katta interaktiv doska ===== */
+:root{--bh:34px;--rf:13px}
+@media (pointer:coarse){:root{--bh:44px;--rf:14px}select.s,input.s{height:42px;font-size:16px}#docTitle{font-size:16px}}
+@media (pointer:coarse) and (min-width:1500px),(min-width:2400px){:root{--bh:56px;--rf:17px}}
+@media (min-width:3200px){:root{--bh:70px;--rf:21px}}
+html,body{height:100dvh}
+body{font-size:var(--rf)}
+.b:not(.big){min-width:var(--bh);height:var(--bh)}
+.b:not(.big) svg{width:calc(var(--bh)*.59);height:calc(var(--bh)*.59)}
+.big svg{width:calc(var(--bh)*.94);height:calc(var(--bh)*.94)}
+.big{font-size:var(--rf);min-height:calc(var(--bh)*2.2);min-width:calc(var(--bh)*1.8);max-width:calc(var(--bh)*2.6)}
+.ltr{font-size:calc(var(--bh)*.47)}
+.gl{font-size:calc(var(--rf)*.9)}
+.panel{min-height:calc(var(--bh)*3.3)}
+#docTitle{font-size:calc(var(--rf)*1.08)}#saved{font-size:calc(var(--rf)*.92)}#title{height:calc(var(--bh)*1.3)}#title .q{width:var(--bh);height:var(--bh)}
+#tabs button{font-size:calc(var(--rf)*1.08);padding:calc(var(--bh)*.22) calc(var(--bh)*.5)}
+#status{height:calc(var(--bh)*.85);font-size:var(--rf)}
+#fontSel{width:calc(var(--bh)*4.4)}#sizeSel{width:calc(var(--bh)*1.9)}
+.sty{width:calc(var(--bh)*2.3);height:calc(var(--bh)*2)}
+.pop .it{padding:calc(var(--bh)*.24) calc(var(--bh)*.36);font-size:var(--rf)}
+.pop{max-height:calc(100dvh - 16px);overflow:auto;overscroll-behavior:contain}
+.sw{grid-template-columns:repeat(10,calc(var(--bh)*.65))}.sw button{width:calc(var(--bh)*.65);height:calc(var(--bh)*.65)}
+#symGrid{grid-template-columns:repeat(10,calc(var(--bh)*1))}#symGrid button{height:var(--bh);font-size:calc(var(--bh)*.5)}
+#tGrid{grid-template-columns:repeat(10,calc(var(--bh)*.6))}#tGrid div{width:calc(var(--bh)*.6);height:calc(var(--bh)*.6)}
+#ribbon.hide{display:none}
+#findBox{width:calc(var(--bh)*10)}
+@media (max-width:760px){
+ #findBox{left:8px;right:8px;width:auto;top:96px}
+ #zRange,#zOut,#zIn{display:none}
+ #back{flex-direction:column}
+ #back nav{width:auto;flex:none;flex-direction:row;overflow-x:auto;padding:0}
+ #back nav button{padding:14px 16px;white-space:nowrap;font-size:14px}
+ #back main{padding:16px 12px}#back h1{font-size:24px;margin-bottom:14px}
+ .card{width:calc(50% - 8px)}
+ .pop{max-width:calc(100vw - 12px)}
+ #symGrid{grid-template-columns:repeat(auto-fill,minmax(40px,1fr));width:min(440px,calc(100vw - 36px))}
+ #docTitle{min-width:0;max-width:none}
+ #installBtn{padding:0 8px!important}#installBtn .it{display:none}
+ #title{gap:0}
+}
+@media (max-height:520px){#title{height:38px}#tabs button{padding:4px 12px}.panel{min-height:92px}.big{min-height:64px}}
 </style>
 </head>
 <body>
@@ -147,7 +189,7 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
   <button class="q" id="qRedo" title="Qaytarish (Ctrl+Y)"></button>
   <input id="docTitle" value="Hujjat1" spellcheck="false" title="Hujjat nomi">
   <span id="saved">Saqlandi</span>
-  <button class="q" id="installBtn" title="Kompyuterga ilova qilib o'rnatish" style="width:auto;padding:0 12px;gap:6px;display:none;border:1px solid rgba(255,255,255,.5)"><svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>O'rnatish</button>
+  <button class="q" id="installBtn" title="Kompyuterga ilova qilib o'rnatish" style="width:auto;padding:0 12px;gap:6px;display:none;border:1px solid rgba(255,255,255,.5)"><svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span class="it">O'rnatish</span></button>
  </div>
  <div id="tabs">
   <button class="file" data-t="file">Fayl</button>
@@ -280,6 +322,7 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
    <div class="grp"><div class="gb">
      <button class="b big" data-c="full"><i data-i="full"></i>To'liq ekran</button>
      <button class="b big" data-c="dark" id="darkBtn"><i data-i="moon"></i>Qorong'i rejim</button>
+     <button class="b big" data-c="mobile" id="mobBtn"><i data-i="phone"></i>Mobil ko'rinish</button>
     </div><div class="gl">Oyna</div></div>
   </div>
  </div>
@@ -356,7 +399,7 @@ const I={paste:'M9 4h6v3H9zM7 5H5v16h14V5h-2',cut:'M4 7a2 2 0 104 0a2 2 0 10-4 0
  margins:'M4 3h16v18H4zM8 3v18M16 3v18M4 7h16M4 17h16',orient:'M7 3h10v18H7zM14 21h7V11',size:'M6 3h9l4 4v14H6zM15 3v4h4',columns:'M4 4h7v16H4zM13 4h7v16h-7z',
  spell:'M4 17l3-10 3 10M5 14h4M13 7h3a2.5 2.5 0 010 5h-3zM13 12h3.5a2.5 2.5 0 010 5H13zM15 21l2 2 4-4',count:'M4 6h16M4 12h10M4 18h6M17 15v6M14 18h6',
  speak:'M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 010 6M19 6a8 8 0 010 12',zoomin:'M10 10m-6 0a6 6 0 1012 0a6 6 0 10-12 0M15 15l5 5M10 7v6M7 10h6',zoomout:'M10 10m-6 0a6 6 0 1012 0a6 6 0 10-12 0M15 15l5 5M7 10h6',
- fitw:'M3 5h18v14H3zM7 12h10M7 12l2-2M7 12l2 2M17 12l-2-2M17 12l-2 2',full:'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5',moon:'M20 14A8 8 0 1110 4a6 6 0 0010 10z',
+ fitw:'M3 5h18v14H3zM7 12h10M7 12l2-2M7 12l2 2M17 12l-2-2M17 12l-2 2',full:'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5',phone:'M7 3h10v18H7zM11 18h2',moon:'M20 14A8 8 0 1110 4a6 6 0 0010 10z',
  save:'M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7',undo:'M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3',redo:'M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3'};
 const svg=n=>`<svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="${I[n]}"/></svg>`;
 $$('i[data-i]').forEach(e=>e.outerHTML=svg(e.dataset.i));
@@ -366,7 +409,7 @@ $('#qSave').innerHTML=svg('save');$('#qUndo').innerHTML=svg('undo');$('#qRedo').
 const MM=96/25.4;
 const SIZES={A4:[210,297],A5:[148,210],A3:[297,420],Letter:[215.9,279.4],Legal:[215.9,355.6]};
 const MARG={"O'zbekiston standarti":[20,15,20,30],"Word odatiy":[25.4,25.4,25.4,25.4],"Tor":[12.7,12.7,12.7,12.7],"O'rtacha":[25.4,19.1,25.4,19.1],"Keng":[25.4,50.8,25.4,50.8]};
-let st={size:'A4',ori:'p',m:[20,15,20,30],cols:1,pn:false,zoom:100,dark:false,spell:true};
+let st={size:'A4',ori:'p',m:[20,15,20,30],cols:1,pn:false,zoom:100,zoomAuto:true,dark:false,spell:true};
 const FONTS=['Times New Roman','Arial','Calibri','Cambria','Georgia','Verdana','Tahoma','Segoe UI','Trebuchet MS','Courier New','Comic Sans MS','Impact','Palatino Linotype','Book Antiqua','Century Gothic'];
 const FSIZES=[8,9,10,10.5,11,12,14,16,18,20,22,24,26,28,36,48,72];
 let saved=null,painterFmt=null,lastFore='#c00000',lastHl='#ffff00';
@@ -429,22 +472,39 @@ $('#imgBar').addEventListener('click',e=>{const b=e.target.closest('[data-im]');
 
 /* ---------- sahifa maketi ---------- */
 function pageDims(){let[w,h]=SIZES[st.size];if(st.ori==='l')[w,h]=[h,w];return[w,h]}
-function applyPage(){const[w,h]=pageDims(),[t,r,b,l]=st.m;
- sheet.style.width=w+'mm';sheet.style.padding=`${t}mm ${r}mm ${b}mm ${l}mm`;doc.style.columnCount=st.cols;doc.style.columnGap='12mm';
+/* Mobil ko'rinish: tor ekranda varaq ekran kengligiga cho'ziladi, matn o'qiladigan o'lchamda qoladi (Word'dagi Mobile View kabi) */
+let mobPref=null;try{mobPref=localStorage.getItem('hujjatMob')}catch(_){}
+const mq=matchMedia('(max-width:760px)');
+const isMob=()=>mobPref==='on'||(mobPref!=='off'&&mq.matches);
+function applyPage(){const[w,h]=pageDims(),[t,r,b,l]=st.m;const mob=isMob();
+ $('#sheetWrap').style.width=mob?'100%':'';
+ if(mob){sheet.style.width='100%';sheet.style.padding='14px 16px 56px'}else{sheet.style.width=w+'mm';sheet.style.padding=`${t}mm ${r}mm ${b}mm ${l}mm`}
+ $('#mobBtn').classList.toggle('on',mob);
+ doc.style.columnCount=mob?1:st.cols;doc.style.columnGap='12mm';
  $('#pageCss').textContent=`@page{size:${w}mm ${h}mm;margin:${t}mm ${r}mm ${b}mm ${l}mm;${st.pn?'@bottom-center{content:counter(page);font:11pt "Times New Roman",serif}':''}}`;
  $('#pnBtn').classList.toggle('on',st.pn);layout()}
 function layout(){
- sheet.querySelectorAll('.mark,.pnum').forEach(e=>e.remove());const[w,h]=pageDims(),[t,,b]=st.m;const ch=(h-t-b)*MM;
+ sheet.querySelectorAll('.mark,.pnum').forEach(e=>e.remove());
+ if(isMob()){doc.style.minHeight='55vh';pages=Math.max(1,Math.ceil(doc.scrollHeight/(innerHeight*.8)));updateStatus();return}
+ const[w,h]=pageDims(),[t,,b]=st.m;const ch=(h-t-b)*MM;
  doc.style.minHeight=ch+'px';const n=Math.max(1,Math.ceil((doc.scrollHeight-2)/ch));doc.style.minHeight=n*ch+'px';
  for(let k=1;k<=n;k++){if(k<n){const m=document.createElement('div');m.className='mark';m.style.top=(t*MM+k*ch)+'px';m.innerHTML=`<span>${k+1}-sahifa</span>`;sheet.appendChild(m)}
   if(st.pn){const p=document.createElement('div');p.className='pnum';p.style.top=(t*MM+k*ch+b*MM*0.35)+'px';p.textContent=k;sheet.appendChild(p)}}
  pages=n;updateStatus()}
 let pages=1;
-function setZoom(z){st.zoom=Math.max(30,Math.min(300,Math.round(z)));$('#sheetWrap').style.zoom=st.zoom/100;$('#zRange').value=st.zoom;$('#zLbl').textContent=st.zoom+'%';store()}
+function showZoom(z){$('#sheetWrap').style.zoom=z/100;$('#zRange').value=z;$('#zLbl').textContent=z+'%'}
+const curZoom=()=>parseFloat($('#sheetWrap').style.zoom)||1;
+function setZoom(z){st.zoomAuto=false;st.zoom=Math.max(30,Math.min(300,Math.round(z)));showZoom(st.zoom);store()}
+/* varaq ekranga sig'masa, kengligiga moslab kichraytiradi; foydalanuvchi o'zi o'zgartirsa, uning tanlovi saqlanadi */
+function autoZoom(){if(isMob()){showZoom(100);return}
+ if(st.zoomAuto===false){showZoom(st.zoom);return}
+ const[w]=pageDims();const pad=parseFloat(getComputedStyle(work).paddingLeft)||0;const fit=Math.floor((work.clientWidth-2*pad-4)/(w*MM)*100);let z=st.zoomAuto==='fit'?fit:Math.min(100,fit);
+ if(st.zoomAuto===true&&innerWidth>=1800){const[,ph]=pageDims();const hfit=Math.floor((work.clientHeight-2*pad-4)/(ph*MM)*100);z=Math.max(100,Math.min(fit,hfit,300))} /* katta ekran/doska: butun varaq ko'rinadigan qilib kattalashtiriladi */
+ showZoom(Math.max(30,Math.min(300,z)))}
 
 /* ---------- holat qatori va UI ---------- */
 function updateStatus(){const t=doc.innerText||'';const w=(t.match(/\S+/g)||[]).length;$('#stWords').textContent=w+" ta so'z";
- let cur=1;const s=getSelection();if(s.rangeCount&&doc.contains(s.anchorNode)){const r=s.getRangeAt(0).getBoundingClientRect(),dr=doc.getBoundingClientRect(),z=st.zoom/100;const[,h]=pageDims(),[t2,,b]=st.m;const ch=(h-t2-b)*MM*z;if(r.top||r.bottom)cur=Math.min(pages,Math.max(1,Math.floor((r.top-dr.top)/ch)+1))}
+ let cur=1;const s=getSelection();if(s.rangeCount&&doc.contains(s.anchorNode)){const r=s.getRangeAt(0).getBoundingClientRect(),dr=doc.getBoundingClientRect(),z=curZoom();const[,h]=pageDims(),[t2,,b]=st.m;const ch=(h-t2-b)*MM*z;if(r.top||r.bottom)cur=Math.min(pages,Math.max(1,Math.floor((r.top-dr.top)/ch)+1))}
  $('#stPage').textContent=`${cur}-sahifa, jami ${pages}`}
 function updateUI(){
  $$('[data-st]').forEach(b=>{let on=false;try{on=document.queryCommandState(b.dataset.st)}catch(_){}b.classList.toggle('on',on)});
@@ -459,7 +519,7 @@ function updateUI(){
 let stT,savedState=true;
 function changed(){savedState=false;$('#saved').textContent='Saqlanmoqda…';clearTimeout(stT);stT=setTimeout(()=>{store();layout()},500);requestAnimationFrame(layout)}
 function store(){try{localStorage.setItem('hujjatPro',JSON.stringify({html:doc.innerHTML,title:$('#docTitle').value,st}));$('#saved').textContent='Saqlandi';savedState=true}catch(e){$('#saved').textContent='Xotira to\'ldi!'}}
-function load(){try{const d=JSON.parse(localStorage.getItem('hujjatPro'));if(d){doc.innerHTML=d.html||'<p><br></p>';$('#docTitle').value=d.title||'Hujjat1';Object.assign(st,d.st||{});return true}}catch(_){}return false}
+function load(){try{const d=JSON.parse(localStorage.getItem('hujjatPro'));if(d){doc.innerHTML=d.html||'<p><br></p>';$('#docTitle').value=d.title||'Hujjat1';Object.assign(st,d.st||{});if(d.st&&d.st.zoomAuto===undefined)st.zoomAuto=(st.zoom===100);return true}}catch(_){}return false}
 
 /* ---------- eksport / import ---------- */
 const docCSS=()=>`body{font-family:"Times New Roman",serif;font-size:14pt;line-height:1.15}p{margin:0 0 6pt}h1{font-size:20pt;color:#2f5496;font-weight:normal}h2{font-size:16pt;color:#2f5496;font-weight:normal}h3{font-size:13pt;color:#1f3763;font-weight:normal}h4{font-size:28pt;font-weight:600}blockquote{font-style:italic;color:#404040;text-align:center}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:3pt 6pt;vertical-align:top}img{max-width:100%}`;
@@ -533,7 +593,7 @@ async function embedHtml(blob){try{await loadJS(JSZIP);const z=await JSZip.loadA
  let ct=await z.file('[Content_Types].xml').async('string');if(!/Extension="html"/.test(ct))ct=ct.replace('<Default ','<Default Extension="html" ContentType="text/html"/><Default ');z.file('[Content_Types].xml',ct);
  return await z.generateAsync({type:'blob',mimeType:DOCX_MIME,compression:'DEFLATE'})}catch(e){return blob}}
 async function isZip(f){const h=new Uint8Array(await f.slice(0,2).arrayBuffer());return h[0]===0x50&&h[1]===0x4B}
-function loadHTML(t){const d=new DOMParser().parseFromString(t,'text/html');const m=d.querySelector('meta[name="hujjat-st"]');if(m){try{Object.assign(st,JSON.parse(m.content));applyPage();setZoom(st.zoom)}catch(_){}}
+function loadHTML(t){const d=new DOMParser().parseFromString(t,'text/html');const m=d.querySelector('meta[name="hujjat-st"]');if(m){try{Object.assign(st,JSON.parse(m.content));applyPage();autoZoom()}catch(_){}}
  d.querySelectorAll('script,style,meta,link').forEach(x=>x.remove());doc.innerHTML=d.body.innerHTML||'<p><br></p>'}
 /* faylga to'g'ridan-to'g'ri saqlash (Word'dagidek Ctrl+S) */
 let fileHandle=null;
@@ -605,8 +665,9 @@ const CMD={
  count:()=>{const t=doc.innerText.replace(/​/g,'');const w=(t.match(/\S+/g)||[]).length,c=t.replace(/\n/g,'').length,cn=t.replace(/\s/g,'').length,p=doc.querySelectorAll('p,h1,h2,h3,h4,li,blockquote').length;
   alert(`Statistika\n\nSahifalar: ${pages}\nSo'zlar: ${w}\nBelgilar (bo'shliqsiz): ${cn}\nBelgilar (bo'shliq bilan): ${c}\nXatboshilar: ${p}`)},
  speak,latcyr:()=>transformSel(lat2cyr),cyrlat:()=>transformSel(cyr2lat),
- zoomIn:()=>setZoom(st.zoom+10),zoomOut:()=>setZoom(st.zoom-10),zoom100:()=>setZoom(100),
- zoomFit:()=>{const[w]=pageDims();setZoom((work.clientWidth-50)/(w*MM)*100)},
+ zoomIn:()=>setZoom(curZoom()*100+10),zoomOut:()=>setZoom(curZoom()*100-10),zoom100:()=>setZoom(100),
+ mobile:()=>{mobPref=isMob()?'off':'on';try{localStorage.setItem('hujjatMob',mobPref)}catch(_){}applyPage();autoZoom();toast(isMob()?'Mobil ko\'rinish yoqildi':'Sahifa ko\'rinishi yoqildi')},
+ zoomFit:()=>{st.zoomAuto='fit';autoZoom();store()},
  full:()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})},
  dark:()=>{st.dark=!st.dark;document.body.classList.toggle('dark',st.dark);$('#darkBtn').classList.toggle('on',st.dark);store()},
  foreAuto:()=>ex('foreColor','#000000'),foreMore:()=>$('#fColor').click(),hlNone:()=>ex('hiliteColor','transparent'),
@@ -668,6 +729,8 @@ $('#fOpen').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)openFi
 
 /* tablar */
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.t==='file'){openBack();return}
+ if(b.classList.contains('on')){$('#ribbon').classList.toggle('hide');autoZoom();return}
+ $('#ribbon').classList.remove('hide');
  $$('#tabs button').forEach(x=>x.classList.toggle('on',x===b));$$('.panel').forEach(p=>p.classList.toggle('on',p.dataset.p===b.dataset.t))});
 
 /* Fayl sahifasi */
@@ -689,7 +752,7 @@ $('#back nav').addEventListener('click',e=>{const b=e.target.closest('button');i
 /* sarlavha tugmalari */
 $('#qSave').onclick=()=>saveFile();$('#qUndo').onclick=()=>{restoreSel();document.execCommand('undo');changed()};$('#qRedo').onclick=()=>{restoreSel();document.execCommand('redo');changed()};
 $('#docTitle').addEventListener('change',store);
-$('#zRange').oninput=e=>setZoom(+e.target.value);$('#zIn').onclick=()=>setZoom(st.zoom+10);$('#zOut').onclick=()=>setZoom(st.zoom-10);
+$('#zRange').oninput=e=>setZoom(+e.target.value);$('#zIn').onclick=()=>setZoom(curZoom()*100+10);$('#zOut').onclick=()=>setZoom(curZoom()*100-10);
 
 /* ---------- hujjat hodisalari ---------- */
 document.addEventListener('selectionchange',()=>{const s=getSelection();if(s.rangeCount&&doc.contains(s.anchorNode)){saveSel();clearTimeout(updateUI._t);updateUI._t=setTimeout(updateUI,60)}});
@@ -715,7 +778,9 @@ addEventListener('beforeunload',store);
 document.execCommand('defaultParagraphSeparator',false,'p');
 if(!load())doc.innerHTML='<p><br></p>';
 doc.spellcheck=st.spell;$('#spellBtn').classList.toggle('on',st.spell);document.body.classList.toggle('dark',st.dark);$('#darkBtn').classList.toggle('on',st.dark);
-applyPage();setZoom(st.zoom);
+applyPage();autoZoom();if(innerHeight<560||innerWidth<=600)$('#ribbon').classList.add('hide');
+addEventListener('resize',()=>{applyPage();autoZoom()});addEventListener('orientationchange',()=>setTimeout(()=>{applyPage();autoZoom()},200));
+if(mq.addEventListener)mq.addEventListener('change',()=>{applyPage();autoZoom()});
 if(window.ResizeObserver)new ResizeObserver(()=>layout()).observe(doc);
 /* ---------- ilova (PWA): o'rnatish, offline, fayllarni ochish ---------- */
 if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
