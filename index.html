@@ -947,6 +947,16 @@ $('#eqGal').addEventListener('click',e=>{const b=e.target.closest('[data-eq]');i
 CMD.eqNew=()=>openEq('');
 doc.addEventListener('click',e=>{const q=e.target.closest('.eq');if(q&&doc.contains(q))openEq(q.dataset.latex,q)});
 document.addEventListener('keydown',e=>{if(e.altKey&&e.key==='='){e.preventDefault();openEq('')}});
+/* Alt+X (Word'dagidek): kursordan oldingi kodni belgiga aylantiradi (263A → ☺, U+1F600 → 😀), belgini esa kodiga */
+function altX(){restoreSel();const sel=getSelection();if(!sel.rangeCount)return;const r=sel.getRangeAt(0);
+ if(!r.collapsed){const t=sel.toString();if(!t)return;const m=t.trim().match(/^(?:U\+)?([0-9A-Fa-f]{2,6})$/i);
+  document.execCommand('insertText',false,m?String.fromCodePoint(parseInt(m[1],16)):[...t].map(c=>c.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')).join(' '));saveSel();changed();return}
+ const n=r.startContainer,off=r.startOffset;if(n.nodeType!==3||!off)return;const before=n.data.slice(0,off);
+ const m=before.match(/(?:U\+)?([0-9A-Fa-f]{2,6})$/i);let from,txt;
+ if(m&&parseInt(m[1],16)<=0x10FFFF&&parseInt(m[1],16)>=0x20){from=off-m[0].length;txt=String.fromCodePoint(parseInt(m[1],16))}
+ else{const ch=[...before].pop();from=off-ch.length;txt=ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')}
+ const rr=document.createRange();rr.setStart(n,from);rr.setEnd(n,off);sel.removeAllRanges();sel.addRange(rr);document.execCommand('insertText',false,txt);saveSel();changed()}
+document.addEventListener('keydown',e=>{if(e.altKey&&!e.ctrlKey&&(e.code==='KeyX')&&!e.target.closest('#eqDlg,input,textarea')){e.preventDefault();altX()}});
 $('[data-pop="eqPop"]').addEventListener('click',renderGallery);
 if(doc.querySelector('.eq'))mlCss();
 
