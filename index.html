@@ -864,7 +864,7 @@ function ttsMark(p){if(!window.CSS||!CSS.highlights)return;CSS.highlights.delete
  const el=A[0].parentElement,rc=el.getBoundingClientRect();if(rc.top<90||rc.bottom>innerHeight-40)el.scrollIntoView({block:'center',behavior:'smooth'})}
 
 function ttsSpeak(){
- const tok=++TTS.tok;speechSynthesis.cancel();const p=TTS.parts[TTS.i];if(!p){ttsStop();return}
+ const tok=++TTS.tok;speechSynthesis.cancel();const p=TTS.parts[TTS.i];if(!p){TTS.paused=true;TTS.done=true;TTS.i=0;ttsMark(null);ttsUI();return}
  ttsMark(p);const pl=ttsPlan(p.t,detectLang(p.t)),u=new SpeechSynthesisUtterance(pl.text);
  if(pl.voice){u.voice=pl.voice;u.lang=pl.voice.lang}else u.lang=pl.lang;u.rate=TTS.rate;
  u.onend=u.onerror=()=>{if(tok!==TTS.tok||TTS.paused)return;TTS.i++;ttsSpeak()};
@@ -885,11 +885,14 @@ function ttsUI(){$('#ttsBar').classList.toggle('show',TTS.on);$('#ttsBar').class
  $('#ttsPlay').innerHTML=svg(TTS.paused?'tplay':'tpause');$('#ttsPlay').title=TTS.paused?'O‘qish':'To‘xtatib turish'}
 function speak(){if(TTS.on){ttsStop();return}
  if(!('speechSynthesis' in window)){toast('Bu brauzer ovoz chiqarib o‘qishni qo‘llamaydi');return}
- restoreSel();ttsCollect();if(!TTS.parts.length){toast('O‘qish uchun matn yo‘q');return}
+ restoreSel();ttsCollect();TTS.done=TTS.dirty=false;if(!TTS.parts.length){toast('O‘qish uchun matn yo‘q');return}
  TTS.on=true;TTS.paused=false;ttsUI();ttsVoiceList();ttsSpeak()}
 function ttsStop(){TTS.tok++;TTS.on=false;TTS.paused=false;speechSynthesis.cancel();ttsMark(null);$('#ttsSet').classList.remove('show');ttsUI()}
-function ttsToggle(){if(!TTS.on)return speak();TTS.paused=!TTS.paused;if(TTS.paused){TTS.tok++;speechSynthesis.cancel()}else ttsSpeak();ttsUI()}
-function ttsJump(d){if(!TTS.on)return;TTS.i=Math.min(Math.max(0,TTS.i+d),TTS.parts.length-1);TTS.paused=false;ttsUI();ttsSpeak()}
+function ttsRecollect(){restoreSel();ttsCollect();TTS.done=TTS.dirty=false;return TTS.parts.length>0}
+function ttsToggle(){if(!TTS.on)return speak();TTS.paused=!TTS.paused;
+ if(TTS.paused){TTS.tok++;speechSynthesis.cancel()}else if((TTS.done||TTS.dirty)&&!ttsRecollect()){TTS.paused=true;toast('O‘qish uchun matn yo‘q')}else ttsSpeak();ttsUI()}
+doc.addEventListener('input',()=>{if(TTS.on)TTS.dirty=true});
+function ttsJump(d){if(!TTS.on)return;if(TTS.dirty){const k=TTS.i;if(!ttsRecollect())return;TTS.i=k}TTS.done=false;TTS.i=Math.min(Math.max(0,TTS.i+d),TTS.parts.length-1);TTS.paused=false;ttsUI();ttsSpeak()}
 function ttsVoiceList(){const s=$('#ttsVoice'),vs=ttsVoices().slice().sort((a,b)=>a.lang.localeCompare(b.lang)||vScore(b)-vScore(a));
  s.innerHTML='<option value="">Avtomatik (matn tiliga qarab)</option>'+vs.map(v=>`<option value="${v.voiceURI.replace(/"/g,'&quot;')}">${v.name.replace(/</g,'&lt;')} — ${v.lang}</option>`).join('');s.value=TTS.voice;
  const uz=bestVoice('uz');$('#ttsHint').innerHTML=uz?`O‘zbekcha ovoz: <b>${uz.name}</b>`:
