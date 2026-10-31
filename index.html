@@ -24,6 +24,13 @@ button,select,input{font:inherit;color:inherit}
 #title .q{width:36px;height:36px;border:0;background:transparent;border-radius:6px;display:grid;place-items:center;cursor:pointer;color:#fff}
 #title .q:hover{background:rgba(255,255,255,.15)}
 #title .q svg{width:20px;height:20px}
+#title .as{display:flex;align-items:center;gap:6px;background:transparent;border:0;color:#fff;font:inherit;font-size:12px;cursor:pointer;padding:4px 6px;border-radius:6px;margin-right:2px;white-space:nowrap}
+#title .as:hover{background:rgba(255,255,255,.15)}
+#title .as .sw{position:relative;width:46px;height:20px;border:1.5px solid #fff;border-radius:10px;display:flex;align-items:center;font-size:10px;font-weight:700;box-sizing:border-box}
+#title .as .sw i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:left .2s}
+#title .as .sw em{font-style:normal;margin-left:19px}
+#title .as.on .sw{background:#fff;color:var(--ac)}#title .as.on .sw i{left:28px;background:var(--ac)}#title .as.on .sw em{margin-left:6px}
+@media (max-width:700px){#title .as .it{display:none}}
 #docTitle{flex:1;max-width:420px;margin:0 auto;background:transparent;border:1px solid transparent;border-radius:6px;color:#fff;text-align:center;padding:6px 10px;font-size:14px}
 #docTitle:hover,#docTitle:focus{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1);outline:0}
 #saved{font-size:12px;opacity:.85;min-width:110px;text-align:right}
@@ -280,6 +287,7 @@ body{font-size:var(--rf)}
 <div id="app">
  <div id="title">
   <svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#fff"/><path d="M16 14h22l10 10v26H16z" fill="#dce6f5" stroke="#2b579a" stroke-width="3" stroke-linejoin="round"/><path d="M22 30h20M22 37h20M22 44h13" stroke="#2b579a" stroke-width="3" stroke-linecap="round"/></svg>
+  <button class="as on" id="asSw" role="switch" aria-checked="true"><span class="it">Avtosaqlash</span><span class="sw"><i></i><em>Yoq</em></span></button>
   <button class="q" id="qSave" title="Saqlash (Ctrl+S)"></button>
   <button class="q" id="qUndo" title="Bekor qilish (Ctrl+Z)"></button>
   <button class="q" id="qRedo" title="Qaytarish (Ctrl+Y)"></button>
@@ -665,10 +673,18 @@ function updateUI(){
  updateStatus()}
 
 /* ---------- saqlash ---------- */
-let stT,savedState=true;
-function changed(){requestAnimationFrame(fitDoc);savedState=false;$('#saved').textContent='Saqlanmoqda…';clearTimeout(stT);stT=setTimeout(()=>{store();layout()},500);requestAnimationFrame(layout)}
+let stT,fsT,savedState=true;
+/* Avtosaqlash (Word'dagidek): yoqiq — har o'zgarish ilova xotirasiga, fayl ochilgan bo'lsa faylning o'ziga ham yoziladi;
+   o'chiq — hech narsa o'zi saqlanmaydi, faqat Ctrl+S / Saqlash bilan */
+let AS=true;try{AS=localStorage.getItem('hujjatAutoSave')!=='0'}catch(_){}
+const okDiscard=()=>AS||savedState||confirm('Hujjatdagi o‘zgarishlar saqlanmagan.\nSaqlamasdan davom etilsinmi?\n\n«Отмена» — qaytib, Ctrl+S bilan saqlang.');
+function changed(){requestAnimationFrame(fitDoc);savedState=false;$('#saved').textContent=AS?'Saqlanmoqda…':'Saqlanmagan';clearTimeout(stT);stT=setTimeout(()=>{if(AS)store();layout()},500);requestAnimationFrame(layout);
+ if(AS&&fileHandle){clearTimeout(fsT);fsT=setTimeout(()=>saveFile(true),3000)}}
 let curId=null;
-function store(){try{localStorage.setItem('hujjatPro',JSON.stringify({id:curId,html:doc.innerHTML,title:$('#docTitle').value,st}));touchRecent();$('#saved').textContent='Saqlandi';savedState=true}catch(e){$('#saved').textContent='Xotira to\'ldi!'}}
+function store(force){
+ /* avtosaqlash o'chiq va saqlanmagan o'zgarish bor: hujjat matniga tegmaymiz, faqat sozlamalar */
+ if(!AS&&!force&&!savedState){try{const d=JSON.parse(localStorage.getItem('hujjatPro')||'null');if(d){d.st=st;localStorage.setItem('hujjatPro',JSON.stringify(d))}}catch(_){}return}
+ try{localStorage.setItem('hujjatPro',JSON.stringify({id:curId,html:doc.innerHTML,title:$('#docTitle').value,st}));touchRecent();$('#saved').textContent='Saqlandi';savedState=true}catch(e){$('#saved').textContent='Xotira to\'ldi!'}}
 function load(){try{const d=JSON.parse(localStorage.getItem('hujjatPro'));if(d){curId=d.id||null;doc.innerHTML=d.html||'<p><br></p>';$('#docTitle').value=d.title||'Hujjat1';Object.assign(st,d.st||{});if(d.st&&d.st.zoomAuto===undefined)st.zoomAuto=(st.zoom===100);return true}}catch(_){}return false}
 
 /* ---------- eksport / import ---------- */
@@ -733,7 +749,7 @@ async function buildDocx(){let D;
     children:kids.length?kids:[new D.Paragraph('')]}]});
   return await embedHtml(await D.Packer.toBlob(d))}
  catch(e){console.error(e);toast('.docx yaratishda xato: '+e.message);return null}}
-async function saveDocx(){toast('.docx tayyorlanmoqda…');const b=await buildDocx();if(b){download(b,fname('.docx'));store();toast('Saqlandi: '+fname('.docx'))}}
+async function saveDocx(){toast('.docx tayyorlanmoqda…');const b=await buildDocx();if(b){download(b,fname('.docx'));store(true);toast('Saqlandi: '+fname('.docx'))}}
 /* Hujjat Pro o'z formati (.hujjat): HTML + sahifa sozlamalari, hech narsa yo'qolmaydi */
 function hujjatHTML(){const c=doc.cloneNode(true);c.querySelectorAll('img.sel').forEach(i=>i.classList.remove('sel'));const meta=JSON.stringify(st).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="hujjat-st" content="${meta}"><title>${$('#docTitle').value.replace(/</g,'&lt;')}</title><style>${docCSS()}</style></head><body>${c.innerHTML.replace(/\u200B/g,'')}</body></html>`}
@@ -748,11 +764,12 @@ function loadHTML(t){const d=new DOMParser().parseFromString(t,'text/html');cons
  d.querySelectorAll('script,style,meta,link').forEach(x=>x.remove());doc.innerHTML=d.body.innerHTML||'<p><br></p>'}
 /* faylga to'g'ridan-to'g'ri saqlash (Word'dagidek Ctrl+S) */
 let fileHandle=null;
-async function saveFile(){
+async function saveFile(quiet){
+ if(quiet&&!fileHandle)return;
  if(fileHandle){const n=fileHandle.name.toLowerCase();const blob=n.endsWith('.txt')?new Blob([doc.innerText.replace(/\u200B/g,'')],{type:'text/plain'}):((await buildDocx())||(n.endsWith('.docx')?null:hujjatBlob()));if(!blob)return;
-  try{if(fileHandle.queryPermission&&(await fileHandle.queryPermission({mode:'readwrite'}))!=='granted'&&(await fileHandle.requestPermission({mode:'readwrite'}))!=='granted')throw new Error('ruxsat');
-   const w=await fileHandle.createWritable();await w.write(blob);await w.close();store();$('#saved').textContent='Saqlandi';toast('Saqlandi: '+fileHandle.name);return}
-  catch(e){toast('Faylga yozib bo\'lmadi — nusxasi yuklab olinadi');fileHandle=null}}
+  try{if(fileHandle.queryPermission&&(await fileHandle.queryPermission({mode:'readwrite'}))!=='granted'&&(quiet||await fileHandle.requestPermission({mode:'readwrite'}))!=='granted')throw new Error('ruxsat');
+   const w=await fileHandle.createWritable();await w.write(blob);await w.close();store(true);$('#saved').textContent='Saqlandi';if(!quiet)toast('Saqlandi: '+fileHandle.name);return}
+  catch(e){if(quiet)return;toast('Faylga yozib bo\'lmadi — nusxasi yuklab olinadi');fileHandle=null}}
  if(window.showSaveFilePicker){try{fileHandle=await showSaveFilePicker({suggestedName:fname('.docx'),types:[{description:'Word hujjati (.docx)',accept:{'application/vnd.openxmlformats-officedocument.wordprocessingml.document':['.docx']}},{description:'Hujjat Pro hujjati (.hujjat)',accept:{'application/x-hujjat':['.hujjat']}}]});
    setFileTitle();return saveFile()}catch(e){if(e.name==='AbortError')return}}
  saveDocx()}
@@ -760,13 +777,13 @@ function setFileTitle(){if(fileHandle){$('#docTitle').value=fileHandle.name.repl
 async function openDialog(){if(window.showOpenFilePicker){try{const[h]=await showOpenFilePicker({types:[{description:'Hujjatlar',accept:{'application/vnd.openxmlformats-officedocument.wordprocessingml.document':['.docx'],'application/x-hujjat':['.hujjat'],'text/html':['.html','.htm'],'text/plain':['.txt']}}]});openFile(await h.getFile(),h)}catch(e){}return}$('#fOpen').click()}
 function saveHTML(){download(new Blob([`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${$('#docTitle').value}</title><style>${docCSS()}</style></head><body>${cleanHTML()}</body></html>`],{type:'text/html'}),fname('.html'))}
 function saveTXT(){download(new Blob([doc.innerText.replace(/​/g,'')],{type:'text/plain;charset=utf-8'}),fname('.txt'))}
-async function openFile(f,handle){const n=f.name.toLowerCase();store();try{
+async function openFile(f,handle){if(!okDiscard())return;const n=f.name.toLowerCase();store();try{
  if(!f.size){doc.innerHTML='<p><br></p>'}
  else if(await isZip(f)){const buf=await f.arrayBuffer();let html=null;try{await loadJS(JSZIP);const z=await JSZip.loadAsync(buf);const e=z.file('hujjat/content.html');if(e)html=await e.async('string')}catch(_){}
   if(html)loadHTML(html);else{toast('Ochilmoqda…');await loadJS('https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js');const r=await mammoth.convertToHtml({arrayBuffer:buf});doc.innerHTML=r.value||'<p><br></p>'}}
  else if(n.endsWith('.txt')){const t=await f.text();doc.innerHTML=t.split(/\r?\n/).map(l=>'<p>'+(l.replace(/&/g,'&amp;').replace(/</g,'&lt;')||'<br>')+'</p>').join('')}
  else loadHTML(await f.text());
- curId=uid();fileHandle=handle||null;$('#docTitle').value=f.name.replace(/\.[^.]+$/,'');setFileTitle();closeBack();changed();toast('Ochildi: '+f.name)}catch(e){toast('Faylni ochib bo\'lmadi (.docx uchun internet kerak)')}}
+ curId=uid();fileHandle=handle||null;$('#docTitle').value=f.name.replace(/\.[^.]+$/,'');setFileTitle();closeBack();changed();store(true);toast('Ochildi: '+f.name)}catch(e){toast('Faylni ochib bo\'lmadi (.docx uchun internet kerak)')}}
 
 /* ---------- topish / almashtirish ---------- */
 function openFind(rep){$('#findBox').classList.add('show');$('#fRep').style.display=rep?'':'none';$('#fOne').style.display=$('#fAll').style.display=rep?'':'none';$('#fTitle').textContent=rep?'Almashtirish':'Topish';const t=getSelection().toString();if(t&&t.length<80)$('#fFind').value=t;$('#fFind').focus();$('#fFind').select()}
@@ -1024,8 +1041,8 @@ function saveRecents(a){for(let n=0;n<40;n++){try{localStorage.setItem('hujjatRe
 const isEmptyDoc=()=>!doc.innerText.replace(/\u200B/g,'').trim()&&!doc.querySelector('img,table,hr,.eq');
 function touchRecent(){if(isEmptyDoc())return;if(!curId)curId=uid();const all=recents(),old=all.find(x=>x.id===curId);
  const a=all.filter(x=>x.id!==curId);a.unshift({id:curId,title:$('#docTitle').value||'Hujjat',html:doc.innerHTML,st:{...st},t:Date.now(),pin:old?old.pin:false,file:fileHandle?fileHandle.name:(old&&old.file)||''});saveRecents(a.slice(0,20))}
-function newDoc(html,title){store();curId=uid();fileHandle=null;doc.innerHTML=html||'<p><br></p>';$('#docTitle').value=title||'Hujjat1';document.title='Hujjat Pro';closeBack();changed();doc.focus()}
-function openRecent(id){const r=recents().find(x=>x.id===id);if(!r)return;store();curId=r.id;fileHandle=null;doc.innerHTML=r.html;Object.assign(st,r.st||{});$('#docTitle').value=r.title;document.title=r.title+' — Hujjat Pro';applyPage();autoZoom();closeBack();changed()}
+function newDoc(html,title){if(!okDiscard())return;store();curId=uid();fileHandle=null;doc.innerHTML=html||'<p><br></p>';$('#docTitle').value=title||'Hujjat1';document.title='Hujjat Pro';closeBack();changed();store(true);doc.focus()}
+function openRecent(id){const r=recents().find(x=>x.id===id);if(!r||!okDiscard())return;store();curId=r.id;fileHandle=null;doc.innerHTML=r.html;Object.assign(st,r.st||{});$('#docTitle').value=r.title;document.title=r.title+' — Hujjat Pro';applyPage();autoZoom();closeBack();changed();store(true)}
 function when(t){const d=new Date(t),n=new Date(),m=Math.round((n-d)/60000);if(m<1)return'Hozirgina';if(m<60)return m+' daqiqa oldin';
  const hm=d.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});if(d.toDateString()===n.toDateString())return'Bugun, '+hm;
  const y=new Date(n);y.setDate(n.getDate()-1);if(d.toDateString()===y.toDateString())return'Kecha, '+hm;return d.toLocaleDateString('uz-UZ',{day:'numeric',month:'long',year:'numeric'})}
@@ -1256,7 +1273,12 @@ document.addEventListener('keydown',e=>{const c=e.ctrlKey||e.metaKey;if(!c)retur
  const map={s:()=>saveFile(),p:openPrint,f2:openPrint,f:()=>openFind(false),h:()=>openFind(true),l:CMD.justifyLeft,e:CMD.justifyCenter,r:CMD.justifyRight,j:CMD.justifyFull,']':CMD.grow,'[':CMD.shrink,o:()=>openDialog(),k:CMD.link};
  if(e.shiftKey&&k==='>'){e.preventDefault();CMD.grow();return}if(e.shiftKey&&k==='<'){e.preventDefault();CMD.shrink();return}
  if(map[k]&&!(k==='f'&&e.target.closest('#findBox'))){e.preventDefault();saveSel();map[k]();updateUI()}});
-addEventListener('beforeunload',store);
+addEventListener('beforeunload',e=>{if(!AS&&!savedState){e.preventDefault();e.returnValue='';return}store()});
+function asUI(){const b=$('#asSw');b.classList.toggle('on',AS);b.setAttribute('aria-checked',AS);b.querySelector('em').textContent=AS?'Yoq':'O‘ch';
+ b.title=AS?'Avtosaqlash yoqilgan: o‘zgarishlar avtomatik saqlanadi'+(fileHandle?' (ochilgan faylning o‘ziga ham)':''):'Avtosaqlash o‘chirilgan: saqlash uchun Ctrl+S'}
+$('#asSw').addEventListener('click',()=>{AS=!AS;try{localStorage.setItem('hujjatAutoSave',AS?'1':'0')}catch(_){}
+ if(AS){store();if(fileHandle)saveFile(true);toast('Avtosaqlash yoqildi')}else{clearTimeout(fsT);if(savedState)store(true);toast('Avtosaqlash o‘chirildi — saqlash uchun Ctrl+S')}asUI()});
+asUI();
 
 /* ---------- ishga tushirish ---------- */
 document.execCommand('defaultParagraphSeparator',false,'p');
@@ -1271,7 +1293,7 @@ if(window.ResizeObserver)new ResizeObserver(()=>layout()).observe(doc);
 if('serviceWorker' in navigator&&location.protocol!=='file:'){
  /* yangi versiya chiqsa, sahifa o'zi bir marta yangilanadi (hujjat oldin saqlanadi) */
  const hadCtrl=!!navigator.serviceWorker.controller;let reloaded=false;
- navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtrl||reloaded)return;reloaded=true;store();try{sessionStorage.setItem('hujjatUpd','1')}catch(_){}location.reload()});
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtrl||reloaded||(!AS&&!savedState))return;reloaded=true;store();try{sessionStorage.setItem('hujjatUpd','1')}catch(_){}location.reload()});
  navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{})}
 let instEvt=null;const isApp=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
