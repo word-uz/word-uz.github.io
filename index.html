@@ -71,6 +71,8 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
 #doc table{border-collapse:collapse;width:100%;margin:4pt 0 8pt}
 #doc td,#doc th{border:1px solid #000;padding:3pt 6pt;vertical-align:top;min-width:30px}
 #doc img{max-width:100%;height:auto}
+#doc [style*="width"]:not(img):not(td):not(th):not(col){width:auto!important;min-width:0!important;max-width:100%!important}
+#doc [style*="nowrap"]{white-space:normal!important}#doc [style*="position"]{position:static!important}#doc table{max-width:100%}
 #doc img.sel{outline:2px solid #2b579a;outline-offset:2px}
 #doc a{color:#0563c1}
 #doc ul,#doc ol{margin:0 0 6pt;padding-left:28pt}
@@ -1208,7 +1210,22 @@ doc.addEventListener('input',e=>{if(e.inputType!=='insertText'||e.data!==' ')ret
 doc.addEventListener('mouseup',()=>{if(painterFmt&&!getSelection().isCollapsed){saveSel();applyFmt(painterFmt);painterFmt=null;$('#painter').classList.remove('on');doc.style.cursor=''}});
 doc.addEventListener('click',e=>{if(e.target.tagName==='IMG')pickImg(e.target);else pickImg(null);const a=e.target.closest('a');if(a&&(e.ctrlKey||e.metaKey))window.open(a.href,'_blank')});
 work.addEventListener('scroll',showImgBar);addEventListener('resize',showImgBar);
-doc.addEventListener('paste',e=>{const it=[...(e.clipboardData||{}).items||[]].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();insertImageFile(it.getAsFile())}});
+/* tashqaridan qo'yilgan matn: manba formatini (shrift, rang, qalinlik) saqlaymiz,
+   lekin varaqdan chiqarib yuboradigan maket uslublarini (eni, joylashuvi, nowrap...) olib tashlaymiz */
+const PASTE_DROP=/^(width|min-width|max-width|height|min-height|max-height|position|top|left|right|bottom|inset|float|clear|display|flex.*|grid.*|order|gap|columns?|column-.*|white-space|overflow.*|transform.*|translate|rotate|scale|z-index|box-sizing|zoom|margin-(left|right)|margin-inline.*|padding.*|text-indent|word-spacing|letter-spacing|background.*|border.*|box-shadow|outline.*|visibility|opacity|contain|aspect-ratio|cursor|user-select|-webkit-.*|-moz-.*)$/;
+function cleanPasteHTML(html){
+ const box=document.createElement('div');box.innerHTML=html.replace(/<!--(StartFragment|EndFragment)-->/g,'');
+ box.querySelectorAll('script,style,meta,link,title,iframe,object,embed,form,input,button,select,textarea,svg,canvas,video,audio,noscript,template').forEach(x=>x.remove());
+ box.querySelectorAll('*').forEach(el=>{
+  for(const a of [...el.attributes]){const n=a.name.toLowerCase();
+   if(n==='style'){for(const pr of [...el.style]){if(PASTE_DROP.test(pr))el.style.removeProperty(pr)}if(!el.style.length)el.removeAttribute('style')}
+   else if(n==='src'||n==='alt'||n==='colspan'||n==='rowspan'||(n==='href'&&!/^\s*javascript:/i.test(a.value)))continue;
+   else el.removeAttribute(a.name)}
+  if(/^(SECTION|ARTICLE|MAIN|HEADER|FOOTER|ASIDE|NAV|FIGURE|FIGCAPTION)$/.test(el.tagName)){const d=document.createElement('div');d.append(...el.childNodes);if(el.getAttribute('style'))d.setAttribute('style',el.getAttribute('style'));el.replaceWith(d)}});
+ return box.innerHTML}
+doc.addEventListener('paste',e=>{const cd=e.clipboardData;if(!cd)return;const html=cd.getData('text/html');
+ if(html&&/\S/.test(cd.getData('text/plain'))){e.preventDefault();document.execCommand('insertHTML',false,cleanPasteHTML(html));changed();return}
+ const it=[...cd.items||[]].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();insertImageFile(it.getAsFile())}});
 doc.addEventListener('drop',e=>{const f=[...e.dataTransfer.files].find(f=>f.type.startsWith('image/'));if(f){e.preventDefault();insertImageFile(f)}});
 doc.addEventListener('keydown',e=>{
  if(e.key==='Tab'){e.preventDefault();const td=closest('td,th');if(td){const cells=[...td.closest('table').querySelectorAll('td,th')];let i=cells.indexOf(td)+(e.shiftKey?-1:1);if(i>=cells.length){tblOp('rowAdd');i=cells.length}const n=td.closest('table').querySelectorAll('td,th')[i];if(n){const r=document.createRange();r.selectNodeContents(n);r.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(r)}return}
