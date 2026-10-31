@@ -60,7 +60,7 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
 #work{flex:1;overflow:auto;position:relative;padding:28px 20px 60px}
 #sheetWrap{margin:0 auto;width:max-content}
 #sheet{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.1);position:relative;margin:0 auto}
-#doc{outline:0;min-height:100px;font-family:"Times New Roman",serif;font-size:14pt;line-height:1.15;word-wrap:break-word;caret-color:#000}
+#doc{outline:0;min-height:100px;font-family:"Times New Roman",serif;font-size:14pt;line-height:1.15;word-wrap:break-word;overflow-wrap:anywhere;caret-color:#000}
 #doc p{margin:0 0 6pt}
 #doc h1{font:400 20pt "Calibri Light",Calibri,"Segoe UI",sans-serif;color:#2f5496;margin:12pt 0 6pt}
 #doc h2{font:400 16pt "Calibri Light",Calibri,"Segoe UI",sans-serif;color:#2f5496;margin:10pt 0 4pt}
@@ -1225,13 +1225,19 @@ function cleanPasteHTML(html){
   if(/^(SECTION|ARTICLE|MAIN|HEADER|FOOTER|ASIDE|NAV|FIGURE|FIGCAPTION)$/.test(el.tagName)){const d=document.createElement('div');d.append(...el.childNodes);if(el.getAttribute('style'))d.setAttribute('style',el.getAttribute('style'));el.replaceWith(d)}});
  return box.innerHTML}
 /* varaqdan chiqib ketgan har qanday elementni varaqqa moslaymiz (qanday usulda kengaytirilgan bo'lmasin) */
-function fitDoc(){if(doc.scrollWidth<=doc.clientWidth+2)return;const R=doc.getBoundingClientRect().right+2;let ch=false;
- doc.querySelectorAll('*').forEach(el=>{if(el.tagName==='IMG')return;const r=el.getBoundingClientRect();if(r.right<=R&&el.scrollWidth<=el.clientWidth+2)return;
+function fitDoc(){if(doc.scrollWidth<=doc.clientWidth+2&&![...doc.children].some(c=>c.getBoundingClientRect().left<doc.getBoundingClientRect().left-2))return;const D=doc.getBoundingClientRect(),R=D.right+2;let ch=false;
+ doc.querySelectorAll('*').forEach(el=>{if(el.tagName==='IMG')return;const r=el.getBoundingClientRect();if(r.right<=R&&r.left>=D.left-2&&el.scrollWidth<=el.clientWidth+2)return;
   for(const a of ['width','nowrap'])if(el.hasAttribute(a)){el.removeAttribute(a);ch=true}
   for(const pr of [...el.style])if(PASTE_DROP.test(pr)||/^margin/.test(pr)){el.style.removeProperty(pr);ch=true}
   if(el.getAttribute('style')==='')el.removeAttribute('style');
   if(el.tagName==='PRE'&&el.style.whiteSpace!=='pre-wrap'){el.style.whiteSpace='pre-wrap';ch=true}});
  if(ch)changed()}
+/* hujjat butunlay bo'shatilsa, qo'yilgan matndan qolgan bo'sh "qobiq" (shrift, rang, joylashuv) ham tozalanadi */
+const docEmpty=()=>!doc.innerText.replace(/[\s\u200B]/g,'')&&!doc.querySelector('img,table,hr,.eq');
+function resetEmptyDoc(){if(!docEmpty()||/^<p>(<br>)?<\/p>$/.test(doc.innerHTML))return false;doc.innerHTML='<p><br></p>';
+ const r=document.createRange();r.setStart(doc.firstChild,0);r.collapse(true);const s=getSelection();s.removeAllRanges();s.addRange(r);saveSel();return true}
+doc.addEventListener('keydown',e=>{if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey)resetEmptyDoc()},true);
+doc.addEventListener('input',()=>{if(docEmpty())resetEmptyDoc()});
 doc.addEventListener('paste',e=>{const cd=e.clipboardData;if(!cd)return;const html=cd.getData('text/html');
  if(html&&/\S/.test(cd.getData('text/plain'))){e.preventDefault();document.execCommand('insertHTML',false,cleanPasteHTML(html));changed();requestAnimationFrame(fitDoc);return}
  const it=[...cd.items||[]].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();insertImageFile(it.getAsFile())}});
@@ -1250,7 +1256,7 @@ addEventListener('beforeunload',store);
 
 /* ---------- ishga tushirish ---------- */
 document.execCommand('defaultParagraphSeparator',false,'p');
-if(!load())doc.innerHTML='<p><br></p>';setTimeout(fitDoc,300);
+if(!load())doc.innerHTML='<p><br></p>';resetEmptyDoc();setTimeout(fitDoc,300);
 try{if(sessionStorage.getItem('hujjatUpd')){sessionStorage.removeItem('hujjatUpd');setTimeout(()=>toast('Dastur yangilandi ✓'),600)}}catch(_){}
 doc.spellcheck=st.spell;$('#spellBtn').classList.toggle('on',st.spell);document.body.classList.toggle('dark',st.dark);$('#darkBtn').classList.toggle('on',st.dark);
 applyPage();autoZoom();if(innerHeight<560||innerWidth<=600)$('#ribbon').classList.add('hide');

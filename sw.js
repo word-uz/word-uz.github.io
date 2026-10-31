@@ -1,5 +1,5 @@
 // Hujjat Pro — offline ishlash uchun service worker
-const VER = 'hujjat-v14';
+const VER = 'hujjat-v15';
 const SHELL = ['./', './index.html', './favicon.svg', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 const LIBS = [
   'https://cdn.jsdelivr.net/npm/docx@9.0.2/build/index.umd.js',
@@ -32,7 +32,8 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   // sahifaning o'zi: avval internetdan (yangilanishlar uchun), bo'lmasa keshdan
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(r => { caches.open(VER).then(c => c.put('./index.html', r.clone())); return r; })
+    // no-cache: GitHub Pages 10 daqiqalik HTTP keshini chetlab, har doim yangi versiyani tekshiramiz
+    e.respondWith(fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(r => { caches.open(VER).then(c => c.put('./index.html', r.clone())); return r; })
       .catch(() => caches.match('./index.html')));
     return;
   }
