@@ -71,6 +71,7 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
 #doc table{border-collapse:collapse;width:100%;margin:4pt 0 8pt}
 #doc td,#doc th{border:1px solid #000;padding:3pt 6pt;vertical-align:top;min-width:30px}
 #doc img{max-width:100%;height:auto}
+#doc pre{white-space:pre-wrap}#doc td,#doc th{word-break:break-word}
 #doc [style*="width"]:not(img):not(td):not(th):not(col){width:auto!important;min-width:0!important;max-width:100%!important}
 #doc [style*="nowrap"]{white-space:normal!important}#doc [style*="position"]{position:static!important}#doc table{max-width:100%}
 #doc img.sel{outline:2px solid #2b579a;outline-offset:2px}
@@ -665,7 +666,7 @@ function updateUI(){
 
 /* ---------- saqlash ---------- */
 let stT,savedState=true;
-function changed(){savedState=false;$('#saved').textContent='Saqlanmoqda…';clearTimeout(stT);stT=setTimeout(()=>{store();layout()},500);requestAnimationFrame(layout)}
+function changed(){requestAnimationFrame(fitDoc);savedState=false;$('#saved').textContent='Saqlanmoqda…';clearTimeout(stT);stT=setTimeout(()=>{store();layout()},500);requestAnimationFrame(layout)}
 let curId=null;
 function store(){try{localStorage.setItem('hujjatPro',JSON.stringify({id:curId,html:doc.innerHTML,title:$('#docTitle').value,st}));touchRecent();$('#saved').textContent='Saqlandi';savedState=true}catch(e){$('#saved').textContent='Xotira to\'ldi!'}}
 function load(){try{const d=JSON.parse(localStorage.getItem('hujjatPro'));if(d){curId=d.id||null;doc.innerHTML=d.html||'<p><br></p>';$('#docTitle').value=d.title||'Hujjat1';Object.assign(st,d.st||{});if(d.st&&d.st.zoomAuto===undefined)st.zoomAuto=(st.zoom===100);return true}}catch(_){}return false}
@@ -1223,8 +1224,16 @@ function cleanPasteHTML(html){
    else el.removeAttribute(a.name)}
   if(/^(SECTION|ARTICLE|MAIN|HEADER|FOOTER|ASIDE|NAV|FIGURE|FIGCAPTION)$/.test(el.tagName)){const d=document.createElement('div');d.append(...el.childNodes);if(el.getAttribute('style'))d.setAttribute('style',el.getAttribute('style'));el.replaceWith(d)}});
  return box.innerHTML}
+/* varaqdan chiqib ketgan har qanday elementni varaqqa moslaymiz (qanday usulda kengaytirilgan bo'lmasin) */
+function fitDoc(){if(doc.scrollWidth<=doc.clientWidth+2)return;const R=doc.getBoundingClientRect().right+2;let ch=false;
+ doc.querySelectorAll('*').forEach(el=>{if(el.tagName==='IMG')return;const r=el.getBoundingClientRect();if(r.right<=R&&el.scrollWidth<=el.clientWidth+2)return;
+  for(const a of ['width','nowrap'])if(el.hasAttribute(a)){el.removeAttribute(a);ch=true}
+  for(const pr of [...el.style])if(PASTE_DROP.test(pr)||/^margin/.test(pr)){el.style.removeProperty(pr);ch=true}
+  if(el.getAttribute('style')==='')el.removeAttribute('style');
+  if(el.tagName==='PRE'&&el.style.whiteSpace!=='pre-wrap'){el.style.whiteSpace='pre-wrap';ch=true}});
+ if(ch)changed()}
 doc.addEventListener('paste',e=>{const cd=e.clipboardData;if(!cd)return;const html=cd.getData('text/html');
- if(html&&/\S/.test(cd.getData('text/plain'))){e.preventDefault();document.execCommand('insertHTML',false,cleanPasteHTML(html));changed();return}
+ if(html&&/\S/.test(cd.getData('text/plain'))){e.preventDefault();document.execCommand('insertHTML',false,cleanPasteHTML(html));changed();requestAnimationFrame(fitDoc);return}
  const it=[...cd.items||[]].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();insertImageFile(it.getAsFile())}});
 doc.addEventListener('drop',e=>{const f=[...e.dataTransfer.files].find(f=>f.type.startsWith('image/'));if(f){e.preventDefault();insertImageFile(f)}});
 doc.addEventListener('keydown',e=>{
@@ -1241,7 +1250,8 @@ addEventListener('beforeunload',store);
 
 /* ---------- ishga tushirish ---------- */
 document.execCommand('defaultParagraphSeparator',false,'p');
-if(!load())doc.innerHTML='<p><br></p>';
+if(!load())doc.innerHTML='<p><br></p>';setTimeout(fitDoc,300);
+try{if(sessionStorage.getItem('hujjatUpd')){sessionStorage.removeItem('hujjatUpd');setTimeout(()=>toast('Dastur yangilandi ✓'),600)}}catch(_){}
 doc.spellcheck=st.spell;$('#spellBtn').classList.toggle('on',st.spell);document.body.classList.toggle('dark',st.dark);$('#darkBtn').classList.toggle('on',st.dark);
 applyPage();autoZoom();if(innerHeight<560||innerWidth<=600)$('#ribbon').classList.add('hide');
 addEventListener('resize',()=>{applyPage();autoZoom()});addEventListener('orientationchange',()=>setTimeout(()=>{applyPage();autoZoom()},200));
@@ -1251,7 +1261,7 @@ if(window.ResizeObserver)new ResizeObserver(()=>layout()).observe(doc);
 if('serviceWorker' in navigator&&location.protocol!=='file:'){
  /* yangi versiya chiqsa, sahifa o'zi bir marta yangilanadi (hujjat oldin saqlanadi) */
  const hadCtrl=!!navigator.serviceWorker.controller;let reloaded=false;
- navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtrl||reloaded)return;reloaded=true;store();location.reload()});
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtrl||reloaded)return;reloaded=true;store();try{sessionStorage.setItem('hujjatUpd','1')}catch(_){}location.reload()});
  navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{})}
 let instEvt=null;const isApp=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
