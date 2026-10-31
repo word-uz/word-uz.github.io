@@ -1029,8 +1029,10 @@ function altX(){restoreSel();const sel=getSelection();if(!sel.rangeCount)return;
  if(!r.collapsed){const t=sel.toString();if(!t)return;const m=t.trim().match(/^(?:U\+)?([0-9A-Fa-f]{2,6})$/i);
   document.execCommand('insertText',false,m?String.fromCodePoint(parseInt(m[1],16)):[...t].map(c=>c.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')).join(' '));saveSel();changed();return}
  const n=r.startContainer,off=r.startOffset;if(n.nodeType!==3||!off)return;const before=n.data.slice(0,off);
+ /* eng uzun to'g'ri kod: 6 xonadan boshlab qisqartirib tekshiramiz (a2b3c5 → 2b3c5 ...) */
  const m=before.match(/(?:U\+)?([0-9A-Fa-f]{2,6})$/i);let from,txt;
- if(m&&parseInt(m[1],16)<=0x10FFFF&&parseInt(m[1],16)>=0x20){from=off-m[0].length;txt=String.fromCodePoint(parseInt(m[1],16))}
+ if(m){const h=m[1];for(let L=h.length;L>=2;L--){const v=parseInt(h.slice(-L),16);if(v>=0x20&&v<=0x10FFFF&&!/[\p{Cn}\p{Cs}\p{Co}\p{Cc}]/u.test(String.fromCodePoint(v))){from=off-L-(L===h.length&&/U\+/i.test(m[0])?2:0);txt=String.fromCodePoint(v);break}}}
+ if(txt){}
  else{const ch=[...before].pop();from=off-ch.length;txt=ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')}
  const rr=document.createRange();rr.setStart(n,from);rr.setEnd(n,off);sel.removeAllRanges();sel.addRange(rr);document.execCommand('insertText',false,txt);saveSel();changed()}
 document.addEventListener('keydown',e=>{if(e.altKey&&!e.ctrlKey&&(e.code==='KeyX')&&!e.target.closest('#eqDlg,input,textarea')){e.preventDefault();altX()}});
@@ -1088,7 +1090,11 @@ addEventListener('resize',()=>{applyPage();autoZoom()});addEventListener('orient
 if(mq.addEventListener)mq.addEventListener('change',()=>{applyPage();autoZoom()});
 if(window.ResizeObserver)new ResizeObserver(()=>layout()).observe(doc);
 /* ---------- ilova (PWA): o'rnatish, offline, fayllarni ochish ---------- */
-if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol!=='file:'){
+ /* yangi versiya chiqsa, sahifa o'zi bir marta yangilanadi (hujjat oldin saqlanadi) */
+ const hadCtrl=!!navigator.serviceWorker.controller;let reloaded=false;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtrl||reloaded)return;reloaded=true;store();location.reload()});
+ navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{})}
 let instEvt=null;const isApp=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
 const ib=$('#installBtn');ib.style.display=(!isApp&&isIOS)?'inline-flex':'none';
