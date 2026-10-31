@@ -179,7 +179,7 @@ body.dark .more a,body.dark #back a{color:#9cc1ff}
  body,html{overflow:visible;height:auto;background:#fff}
  #title,#tabs,#ribbon,#status,.pop,#findBox,#imgBar,#back,#toast,.mark,.pnum{display:none!important}
  #app{display:block;height:auto}#work{overflow:visible;padding:0}
- #sheetWrap{zoom:1!important}
+ #sheetWrap{zoom:1!important;width:auto!important;margin:0!important}#ttsBar,#eqDlg,#symDlg,#emoPop{display:none!important}
  #sheet{box-shadow:none;padding:0!important;width:auto!important;min-height:0!important}
  #doc .pb{border:0;margin:0}#doc .pb::after{display:none}
  #doc img.sel{outline:0}
@@ -1211,18 +1211,20 @@ doc.addEventListener('input',e=>{if(e.inputType!=='insertText'||e.data!==' ')ret
 doc.addEventListener('mouseup',()=>{if(painterFmt&&!getSelection().isCollapsed){saveSel();applyFmt(painterFmt);painterFmt=null;$('#painter').classList.remove('on');doc.style.cursor=''}});
 doc.addEventListener('click',e=>{if(e.target.tagName==='IMG')pickImg(e.target);else pickImg(null);const a=e.target.closest('a');if(a&&(e.ctrlKey||e.metaKey))window.open(a.href,'_blank')});
 work.addEventListener('scroll',showImgBar);addEventListener('resize',showImgBar);
-/* tashqaridan qo'yilgan matn: manba formatini (shrift, rang, qalinlik) saqlaymiz,
-   lekin varaqdan chiqarib yuboradigan maket uslublarini (eni, joylashuvi, nowrap...) olib tashlaymiz */
+/* fitDoc uchun: varaqdan chiqarib yuboradigan maket uslublari */
 const PASTE_DROP=/^(width|min-width|max-width|height|min-height|max-height|position|top|left|right|bottom|inset|float|clear|display|flex.*|grid.*|order|gap|columns?|column-.*|white-space|overflow.*|transform.*|translate|rotate|scale|z-index|box-sizing|zoom|margin-(left|right)|margin-inline.*|padding.*|text-indent|word-spacing|letter-spacing|background.*|border.*|box-shadow|outline.*|visibility|opacity|contain|aspect-ratio|cursor|user-select|-webkit-.*|-moz-.*)$/;
+/* Ctrl+V: Word'dagi «Formatni birlashtirish» — tuzilma (xatboshi, ro'yxat, jadval, sarlavha, havola, rasm) va
+   qalin/yotiq/tagi chizilgan saqlanadi; manbaning shrifti, rangi, o'lchami, foni, eni olib tashlanadi — matn hujjat uslubida bo'ladi */
 function cleanPasteHTML(html){
  const box=document.createElement('div');box.innerHTML=html.replace(/<!--(StartFragment|EndFragment)-->/g,'');
  box.querySelectorAll('script,style,meta,link,title,iframe,object,embed,form,input,button,select,textarea,svg,canvas,video,audio,noscript,template').forEach(x=>x.remove());
- box.querySelectorAll('*').forEach(el=>{
+ const wrap=(el,tag)=>{const w=document.createElement(tag);w.append(...el.childNodes);el.append(w)};
+ [...box.querySelectorAll('*')].reverse().forEach(el=>{const st=el.style;
+  /* uslub orqali berilgan qalin/yotiq/tagi chizilgan yozuvni haqiqiy teglarga aylantiramiz */
+  if(st){if(+st.fontWeight>=600||st.fontWeight==='bold')wrap(el,'b');if(st.fontStyle==='italic')wrap(el,'i');if(/underline/.test(st.textDecoration||st.textDecorationLine||''))wrap(el,'u')}
   for(const a of [...el.attributes]){const n=a.name.toLowerCase();
-   if(n==='style'){for(const pr of [...el.style]){if(PASTE_DROP.test(pr))el.style.removeProperty(pr)}if(!el.style.length)el.removeAttribute('style')}
-   else if(n==='src'||n==='alt'||n==='colspan'||n==='rowspan'||(n==='href'&&!/^\s*javascript:/i.test(a.value)))continue;
-   else el.removeAttribute(a.name)}
-  if(/^(SECTION|ARTICLE|MAIN|HEADER|FOOTER|ASIDE|NAV|FIGURE|FIGCAPTION)$/.test(el.tagName)){const d=document.createElement('div');d.append(...el.childNodes);if(el.getAttribute('style'))d.setAttribute('style',el.getAttribute('style'));el.replaceWith(d)}});
+   if(n==='src'||n==='alt'||n==='colspan'||n==='rowspan'||(n==='href'&&!/^\s*javascript:/i.test(a.value)))continue;el.removeAttribute(a.name)}
+  if(/^(SPAN|FONT|SECTION|ARTICLE|MAIN|HEADER|FOOTER|ASIDE|NAV|FIGURE|FIGCAPTION|O:P|MARK|SMALL|BIG|ABBR|TIME|LABEL)$/.test(el.tagName))el.replaceWith(...el.childNodes)});
  return box.innerHTML}
 /* varaqdan chiqib ketgan har qanday elementni varaqqa moslaymiz (qanday usulda kengaytirilgan bo'lmasin) */
 function fitDoc(){if(doc.scrollWidth<=doc.clientWidth+2&&![...doc.children].some(c=>c.getBoundingClientRect().left<doc.getBoundingClientRect().left-2))return;const D=doc.getBoundingClientRect(),R=D.right+2;let ch=false;
