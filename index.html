@@ -1069,6 +1069,8 @@ function refreshBack(){const h=new Date().getHours();$('#greet').textContent=h<5
  renderRecents($('#recentHome'),rFilter);renderRecents($('#recentOpen'),'recent');$$('.rtabs button').forEach(b=>b.classList.toggle('on',b.dataset.r===rFilter))}
 $('.rtabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;rFilter=b.dataset.r;refreshBack()});
 $('#back main').addEventListener('click',e=>{const g=e.target.closest('[data-goto]');if(g){e.preventDefault();showView(g.dataset.goto)}const f=e.target.closest('[data-f]');if(f)backCmd(f.dataset.f)});
+/* Word'dagidek: Ctrl+P (yoki Ctrl+F2) Fayl → Chop etish sahifasini ochadi; u ochiq bo'lsa qayta bosish chop etadi */
+function openPrint(){if($('#back section[data-view="print"].on')&&$('#back').classList.contains('show')){backCmd('print');return}openBack();showView('print')}
 function openBack(){store();$('#back').classList.add('show');showView('home')}function closeBack(){$('#back').classList.remove('show')}
 function backCmd(f){if(f==='close')closeBack();if(f==='save'){closeBack();saveFile()}if(f==='browse')openDialog();
  if(f==='print'){closeBack();setTimeout(()=>window.print(),300)}
@@ -1251,7 +1253,7 @@ doc.addEventListener('keydown',e=>{
  if(!doc.textContent.trim()&&!doc.querySelector('img,table,hr')&&(e.key==='Backspace'||e.key==='Delete')){e.preventDefault();doc.innerHTML='<p><br></p>'}
 });
 document.addEventListener('keydown',e=>{const c=e.ctrlKey||e.metaKey;if(!c)return;const k=e.key.toLowerCase();
- const map={s:()=>saveFile(),p:()=>window.print(),f:()=>openFind(false),h:()=>openFind(true),l:CMD.justifyLeft,e:CMD.justifyCenter,r:CMD.justifyRight,j:CMD.justifyFull,']':CMD.grow,'[':CMD.shrink,o:()=>openDialog(),k:CMD.link};
+ const map={s:()=>saveFile(),p:openPrint,f2:openPrint,f:()=>openFind(false),h:()=>openFind(true),l:CMD.justifyLeft,e:CMD.justifyCenter,r:CMD.justifyRight,j:CMD.justifyFull,']':CMD.grow,'[':CMD.shrink,o:()=>openDialog(),k:CMD.link};
  if(e.shiftKey&&k==='>'){e.preventDefault();CMD.grow();return}if(e.shiftKey&&k==='<'){e.preventDefault();CMD.shrink();return}
  if(map[k]&&!(k==='f'&&e.target.closest('#findBox'))){e.preventDefault();saveSel();map[k]();updateUI()}});
 addEventListener('beforeunload',store);
