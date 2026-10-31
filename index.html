@@ -841,7 +841,8 @@ function ttsPlan(text,lang){
   if(l.startsWith('tr'))return{voice:v,text:uz2tr(lat)};
   if(l.startsWith('ru')||l.startsWith('kk'))return{voice:v,text:uz2ru(lat2cyr(lat))};
   return{voice:v,text:lat}}
- const v=bestVoice(lang)||(pick||null);return v?{voice:v,text}:{text,lang}}
+ /* tanlangan ovoz o'z tilidagi matnga qo'llanadi, boshqa tillar avtomatik */
+ const v=(pick&&vLang(pick).startsWith(lang)?pick:null)||bestVoice(lang)||pick||null;return v?{voice:v,text}:{text,lang}}
 
 /* hujjatdagi matnni joyi bilan yig'ish (o'qilayotgan gapni belgilash uchun) */
 function ttsCollect(){
