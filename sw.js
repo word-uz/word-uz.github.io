@@ -1,5 +1,5 @@
 // Hujjat Pro — offline ishlash uchun service worker
-const VER = 'hujjat-v29';
+const VER = 'hujjat-v30';
 const SHELL = ['./', './index.html', './favicon.svg', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 const LIBS = [
   'https://cdn.jsdelivr.net/npm/docx@9.0.2/build/index.umd.js',

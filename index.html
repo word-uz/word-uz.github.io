@@ -67,11 +67,11 @@ select.s,input.s{height:32px;border:1px solid var(--bd);border-radius:5px;backgr
 #work{flex:1;overflow:auto;position:relative;padding:28px 20px 60px}
 #sheetWrap{margin:0 auto;width:max-content}
 #sheet{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.1);position:relative;margin:0 auto}
-#doc{outline:0;min-height:100px;font-family:"Times New Roman",serif;font-size:14pt;line-height:1.15;word-wrap:break-word;overflow-wrap:anywhere;caret-color:#000}
-#doc p{margin:0 0 6pt}
-#doc h1{font:400 20pt "Calibri Light",Calibri,"Segoe UI",sans-serif;color:#2f5496;margin:12pt 0 6pt}
-#doc h2{font:400 16pt "Calibri Light",Calibri,"Segoe UI",sans-serif;color:#2f5496;margin:10pt 0 4pt}
-#doc h3{font:400 13pt "Calibri Light",Calibri,"Segoe UI",sans-serif;color:#1f3763;margin:8pt 0 4pt}
+#doc{outline:0;min-height:100px;font-family:"Times New Roman",serif;font-size:14pt;line-height:var(--plh,1.15);word-wrap:break-word;overflow-wrap:anywhere;caret-color:#000}
+#doc p{margin:0 0 var(--pa,6pt)}
+#doc h1{font:400 20pt var(--hf,"Calibri Light",Calibri,"Segoe UI",sans-serif);color:var(--h1c,#2f5496);margin:12pt 0 6pt}
+#doc h2{font:400 16pt var(--hf,"Calibri Light",Calibri,"Segoe UI",sans-serif);color:var(--h2c,#2f5496);margin:10pt 0 4pt}
+#doc h3{font:400 13pt var(--hf,"Calibri Light",Calibri,"Segoe UI",sans-serif);color:var(--h3c,#1f3763);margin:8pt 0 4pt}
 #doc h4{font:600 28pt "Calibri Light",Calibri,"Segoe UI",sans-serif;color:#000;margin:0 0 8pt;letter-spacing:-.5px}
 #doc blockquote{margin:10pt 40pt;font-style:italic;color:#404040;text-align:center}
 #doc pre{font:11pt Consolas,"Courier New",monospace;background:#f4f4f4;padding:8pt;border-radius:3px;white-space:pre-wrap}
@@ -390,7 +390,7 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
 /* --- Qo'yish qo'shimchalari --- */
 #tablePop .it{margin-top:2px}
 .tsv{display:inline-block;width:30px;height:18px;border:1px solid #999}
-#doc table.ts-blue th,#doc table.ts-blue tr:first-child td{background:#4472c4;color:#fff;font-weight:700;border-color:#8eaadb}#doc table.ts-blue td{border-color:#8eaadb}
+#doc table.ts-blue th,#doc table.ts-blue tr:first-child td{background:var(--acc,#4472c4);color:#fff;font-weight:700;border-color:#8eaadb}#doc table.ts-blue td{border-color:#8eaadb}
 #doc table.ts-zebra tr:nth-child(even) td{background:#d9e2f3}#doc table.ts-zebra tr:first-child td{font-weight:700;border-bottom:2px solid #4472c4}#doc table.ts-zebra td{border-color:#b4c6e7}
 #doc table.ts-green tr:first-child td{background:#70ad47;color:#fff;font-weight:700}#doc table.ts-green td{background:#e2efda;border-color:#a9d08e}
 #doc table.ts-orange tr:first-child td{background:#ed7d31;color:#fff;font-weight:700}#doc table.ts-orange td{background:#fbe4d5;border-color:#f4b183}
@@ -466,6 +466,26 @@ body.irm #ttsBar{top:64px}
 .tplsearch{padding:8px 12px;border:1px solid var(--bd);border-radius:20px;font:inherit;width:min(420px,100%);margin:0 0 16px}
 body.dragfile #work::after{content:"Faylni shu yerga tashlang — ochiladi";position:fixed;inset:12px;border:3px dashed var(--ac);border-radius:12px;background:rgba(43,87,154,.08);display:grid;place-items:center;font-size:22px;color:var(--ac);z-index:90;pointer-events:none}
 @media (max-width:800px){.infowrap{grid-template-columns:1fr}.verwrap{grid-template-columns:1fr;height:auto}.verl{max-height:180px}.verdoc{height:50vh}}
+
+/* --- Dizayn: uslublar to'plami (ss-*), ranglar va shriftlar o'zgaruvchilar orqali --- */
+#doc.ss-classic{--hf:"Times New Roman",serif;--h1c:#000;--h2c:#000;--h3c:#000}
+#doc.ss-classic h1{font-weight:700;font-size:16pt;text-align:center;text-transform:uppercase}#doc.ss-classic h2{font-weight:700;font-size:14pt}#doc.ss-classic h3{font-weight:700;font-style:italic;font-size:14pt}
+#doc.ss-gost{--hf:"Times New Roman",serif;--h1c:#000;--h2c:#000;--h3c:#000;--pa:0pt;--plh:1.5}
+#doc.ss-gost h1{font-weight:700;font-size:14pt;text-align:center;text-transform:uppercase;margin:0 0 12pt}#doc.ss-gost h2{font-weight:700;font-size:14pt;text-indent:1.25cm;margin:12pt 0 6pt}#doc.ss-gost h3{font-weight:700;font-style:italic;font-size:14pt;text-indent:1.25cm;margin:6pt 0}
+#doc.ss-gost p{text-align:justify;text-indent:1.25cm}#doc.ss-gost td p,#doc.ss-gost .toc p,#doc.ss-gost p[style*="text-align"]{text-indent:0}
+#doc.ss-modern{--hf:"Segoe UI",sans-serif}#doc.ss-modern h1{font-weight:600;font-size:20pt;border-bottom:2px solid var(--acc,#4472c4);padding-bottom:3pt}#doc.ss-modern h2{font-weight:600;font-size:12pt;text-transform:uppercase;letter-spacing:.6px;color:var(--acc,#4472c4)}#doc.ss-modern h3{font-weight:600;font-size:12pt}
+#doc.ss-minimal{--hf:Arial,sans-serif;--h1c:#262626;--h2c:#404040;--h3c:#595959}#doc.ss-minimal h1{font-weight:300;font-size:24pt}#doc.ss-minimal h2{font-variant:small-caps;letter-spacing:1px;font-size:14pt}#doc.ss-minimal h3{font-size:12pt;font-weight:700}
+#doc.ss-bar h1{border-left:6px solid var(--acc,#4472c4);padding:2pt 0 2pt 8pt;background:#f2f2f2}#doc.ss-bar h2{border-left:3px solid var(--acc,#4472c4);padding-left:6pt}
+#doc.ss-shaded h1{background:var(--acc,#4472c4);color:#fff;padding:4pt 8pt;font-size:18pt}#doc.ss-shaded h2{border-bottom:1px solid var(--acc,#4472c4);color:var(--acc,#4472c4)}
+.ssgal{display:grid;grid-template-columns:repeat(7,64px);gap:4px;margin:0 6px;align-self:center}
+.ssgal button{height:64px;border:1px solid var(--bd);background:#fff;border-radius:3px;cursor:pointer;padding:5px 6px;text-align:left;overflow:hidden;color:#000}
+.ssgal button:hover{border-color:var(--ac)}.ssgal button.on{box-shadow:0 0 0 2px var(--ac)}
+.ssgal b{display:block;font-size:10px;line-height:1.2;margin-bottom:3px;white-space:nowrap;overflow:hidden}.ssgal i{display:block;height:2px;background:#bbb;margin:3px 0;border-radius:1px}.ssgal small{display:block;font-size:8.5px;color:#555;margin-top:4px;text-align:center}
+.thgrid{display:grid;grid-template-columns:repeat(3,120px);gap:8px;padding:4px}.thgrid button{border:1px solid var(--bd);background:#fff;border-radius:4px;cursor:pointer;padding:8px;text-align:left;color:#000}.thgrid button:hover{border-color:var(--ac)}
+.thgrid .tc{display:flex;gap:2px;margin:6px 0 4px}.thgrid .tc span{flex:1;height:10px}.thgrid .ta{font-size:22px;line-height:1}.thgrid small{display:block;font-size:11px;color:#555}
+#colList .it span.sw,#colList .it span.sws{display:inline-flex;gap:2px}#colList .it span.sws i{display:inline-block;width:14px;height:14px}
+#fontList .it{flex-direction:column;align-items:flex-start;gap:0}#fontList .it b{font-size:16px;font-weight:400}#fontList .it span{font-size:12px;color:var(--mut)}
+#spList .it{gap:12px}#spList .spv{display:inline-flex;flex-direction:column;width:26px}#spList .spv i{display:block;height:2px;background:#888}
 #symDlg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:70;display:none;align-items:flex-start;justify-content:center;padding-top:6vh}
 #symDlg.show{display:flex}
 #symDlg label{display:flex;align-items:center;gap:6px;font-size:var(--rf)}
@@ -636,6 +656,16 @@ body.dragfile #work::after{content:"Faylni shu yerga tashlang — ochiladi";posi
   </div>
   <!-- DIZAYN -->
   <div class="panel" data-p="des">
+   <div class="grp"><div class="gb">
+     <button class="b big" data-pop="thPop"><i data-i="themes"></i>Mavzular</button>
+     <div class="ssgal" id="ssGal"></div>
+     <div class="col">
+      <button class="b" data-pop="colPal" title="Mavzu ranglari"><i data-i="colors"></i>Ranglar ▾</button>
+      <button class="b" data-pop="fontPal" title="Mavzu shriftlari"><i data-i="fonts"></i>Shriftlar ▾</button>
+      <button class="b" data-pop="spPop" title="Xatboshilar oralig'i"><i data-i="pspace"></i>Xatboshi oralig'i ▾</button>
+     </div>
+     <button class="b big" data-c="dsDefault" title="Shu dizayn barcha yangi hujjatlarga qo'llansin"><i data-i="setdef"></i>Odatiy qilish</button>
+    </div><div class="gl">Hujjatni formatlash</div></div>
    <div class="grp"><div class="gb">
      <button class="b big" data-pop="wmPop" id="wmBtn"><i data-i="watermark"></i>Suv belgisi</button>
      <button class="b big" data-pop="pcPop" id="pcBtn"><i data-i="pagecolor"></i>Sahifa rangi</button>
@@ -823,6 +853,10 @@ body.dragfile #work::after{content:"Faylni shu yerga tashlang — ochiladi";posi
  <div class="eqtitle">Versiyalar tarixi <button class="btn" data-vr="x" style="padding:2px 10px">✕</button></div>
  <div class="verwrap"><div class="verl" id="verList"></div><div class="verp"><div class="verbar"><span id="verTitle">Versiyani tanlang</span><button class="btn pri" data-vr="restore" disabled>Shu versiyani tiklash</button></div><div class="verdoc" id="verDoc"></div></div></div>
 </div></div>
+<div class="pop" id="thPop"><div class="thgrid" id="thGrid"></div></div>
+<div class="pop" id="colPal"><div id="colList"></div></div>
+<div class="pop" id="fontPal"><div id="fontList"></div></div>
+<div class="pop" id="spPop"><div id="spList"></div></div>
 <div class="pop" id="casePop">
  <button class="it" data-x="caseSent">Gap boshi katta harf</button><button class="it" data-x="caseLow">kichik harflar</button><button class="it" data-x="caseUp">KATTA HARFLAR</button><button class="it" data-x="caseCap">Har So'z Bosh Harf Bilan</button>
 </div>
@@ -1003,7 +1037,7 @@ body.dragfile #work::after{content:"Faylni shu yerga tashlang — ochiladi";posi
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const doc=$('#doc'),sheet=$('#sheet'),work=$('#work');
-const I={readm:'M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1zM12 6v14',printl:'M6 3h12v18H6zM9 7h6M9 11h6M9 15h4',webl:'M12 21a9 9 0 100-18 9 9 0 000 18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18',immersive:'M4 5h7v14H4zM13 5h7v14h-7zM6 9h3M6 12h3M15 9h3M15 12h3',ruler:'M3 8h18v8H3zM7 8v3M11 8v4M15 8v3M19 8v4',grid:'M4 4h16v16H4zM4 9h16M4 14h16M9 4v16M14 4v16',onepage:'M7 3h10v18H7zM4 12h2M18 12h2',zoomdlg:'M10 10m-6 0a6 6 0 1012 0a6 6 0 10-12 0M15 15l5 5M8 10h4',chart:'M4 20h16M7 16v-5M12 16V7M17 16v-8',icons:'M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z',qr:'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2zM6.5 6.5h1v1h-1zM16.5 6.5h1v1h-1zM6.5 16.5h1v1h-1z',tbox:'M4 5h16v14H4zM8 9h8M8 12h8M8 15h5',wordart:'M4 19l5-14h2l5 14M6 14h8M17 8c2 0 3 1 3 2.5S19 13 17 13',sign:'M3 17c3-1 4-6 6-6s0 6 2 6 3-4 4-4 1 3 3 3M3 21h18',bookmark:'M7 3h10v18l-5-4-5 4z',merge:'M3 5h18v14H3zM12 5v4M12 15v4M8 12h8M14 10l2 2-2 2M10 10l-2 2 2 2',tstyle:'M3 4h18v16H3zM3 9h18M3 14h18M9 9v11M15 9v11',breaks:'M6 3h12v6H6zM6 15h12v6H6zM3 12h3M9 12h2M13 12h2M18 12h3',lnum:'M4 6h1M4 12h1M4 18h1M8 6h12M8 12h12M8 18h9',launch:'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',wrap:'M4 5h16M4 19h16M4 9h7M4 13h7M14 9h6v6h-6z',rotate:'M20 12a8 8 0 11-3-6.2M20 4v5h-5',cmt:'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',cmtdel:'M4 5h16v11H9l-5 4zM9 8l6 6M15 8l-6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',cmtshow:'M4 5h16v11H9l-5 4zM12 8v.01M12 11v3',track:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4M14 20h6',accept:'M5 12l5 5 9-10',reject:'M6 6l12 12M18 6L6 18',markup:'M4 6h16M4 12h10M4 18h7M17 14l3 3-3 3',translate:'M4 5h9M8.5 3v2M6 5c0 4 3 7 6 8M11 5c-1 4-4 7-7 8M13 21l4-9 4 9M14.5 18h5',lock:'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',mlist:'M4 6h1M8 6h12M6 12h1M10 12h10M8 18h1M12 18h8',sort:'M4 6h7M4 12h5M4 18h3M17 4v16M14 17l3 3 3-3',shade:'M4 20l8-16 8 16zM8 13h8',bordb:'M4 4h16v16H4zM4 20h16',fx:'M5 19l6-14 6 14M7.5 14h7M18 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1z',mic:'M12 3a3 3 0 013 3v6a3 3 0 01-6 0V6a3 3 0 013-3zM5 11a7 7 0 0014 0M12 18v3',cover:'M5 3h14v18H5zM8 7h8M8 10h8M9 15h6M10 18h4',blank:'M6 3h9l4 4v14H6zM15 3v4h4',header:'M4 3h16v18H4zM4 8h16M8 5.5h8',footer:'M4 3h16v18H4zM4 16h16M8 18.5h8',dropcap:'M4 5h6v8H4zM13 6h7M13 10h7M4 16h16M4 20h16',watermark:'M5 3h14v18H5zM8 16l8-8M9 9.5l1.5-1.5M14.5 15l1.5-1.5',pagecolor:'M5 3h14v18H5zM12 9c2 3 3 4.5 3 6a3 3 0 01-6 0c0-1.5 1-3 3-6z',pageborder:'M3 3h18v18H3zM6 6h12v12H6z',toc:'M4 5h10M4 9h13M7 13h10M7 17h13M17 5h3M19 9h1',footnote:'M4 6h12M4 10h12M4 14h8M17 4v5M15.5 5.2L17 4M4 19h5M11 19h1',navpane:'M3 4h18v16H3zM9 4v16M5 8h2M5 11h2M5 14h2',focus:'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5M9 12h6',pilcrow:'M13 4v16M17 4v16M19 4H10a4 4 0 000 8h3',tplay:'M8 5l11 7-11 7z',tpause:'M8 5v14M16 5v14',tprev:'M6 5v14M18 5L9 12l9 7z',tnext:'M18 5v14M6 5l9 7-9 7z',tgear:'M12 9a3 3 0 100 6 3 3 0 000-6zM12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1',tclose:'M6 6l12 12M18 6L6 18',paste:'M9 4h6v3H9zM7 5H5v16h14V5h-2',cut:'M4 7a2 2 0 104 0a2 2 0 10-4 0M4 17a2 2 0 104 0a2 2 0 10-4 0M7.5 8.5L20 18M7.5 15.5L20 6',copy:'M8 8h12v12H8zM16 8V4H4v12h4',
+const I={themes:'M12 3a9 9 0 100 18c1.5 0 2-1 2-2s-1-1.5-1-2.5S14 15 15 15h2a4 4 0 004-4c0-4.5-4-8-9-8zM7.5 11h.01M10 7h.01M15 7h.01M17.5 10.5h.01',colors:'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',fonts:'M4 19l5-14 5 14M6 14h6M15 19V11a3 3 0 016 0v8M15 15h6',pspace:'M8 6h12M8 12h12M8 18h12M4 4v4M4 16v4M3 7l1 1 1-1M3 17l1-1 1 1',setdef:'M5 12l5 5 9-10',readm:'M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1zM12 6v14',printl:'M6 3h12v18H6zM9 7h6M9 11h6M9 15h4',webl:'M12 21a9 9 0 100-18 9 9 0 000 18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18',immersive:'M4 5h7v14H4zM13 5h7v14h-7zM6 9h3M6 12h3M15 9h3M15 12h3',ruler:'M3 8h18v8H3zM7 8v3M11 8v4M15 8v3M19 8v4',grid:'M4 4h16v16H4zM4 9h16M4 14h16M9 4v16M14 4v16',onepage:'M7 3h10v18H7zM4 12h2M18 12h2',zoomdlg:'M10 10m-6 0a6 6 0 1012 0a6 6 0 10-12 0M15 15l5 5M8 10h4',chart:'M4 20h16M7 16v-5M12 16V7M17 16v-8',icons:'M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z',qr:'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2zM6.5 6.5h1v1h-1zM16.5 6.5h1v1h-1zM6.5 16.5h1v1h-1z',tbox:'M4 5h16v14H4zM8 9h8M8 12h8M8 15h5',wordart:'M4 19l5-14h2l5 14M6 14h8M17 8c2 0 3 1 3 2.5S19 13 17 13',sign:'M3 17c3-1 4-6 6-6s0 6 2 6 3-4 4-4 1 3 3 3M3 21h18',bookmark:'M7 3h10v18l-5-4-5 4z',merge:'M3 5h18v14H3zM12 5v4M12 15v4M8 12h8M14 10l2 2-2 2M10 10l-2 2 2 2',tstyle:'M3 4h18v16H3zM3 9h18M3 14h18M9 9v11M15 9v11',breaks:'M6 3h12v6H6zM6 15h12v6H6zM3 12h3M9 12h2M13 12h2M18 12h3',lnum:'M4 6h1M4 12h1M4 18h1M8 6h12M8 12h12M8 18h9',launch:'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',wrap:'M4 5h16M4 19h16M4 9h7M4 13h7M14 9h6v6h-6z',rotate:'M20 12a8 8 0 11-3-6.2M20 4v5h-5',cmt:'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',cmtdel:'M4 5h16v11H9l-5 4zM9 8l6 6M15 8l-6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',cmtshow:'M4 5h16v11H9l-5 4zM12 8v.01M12 11v3',track:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4M14 20h6',accept:'M5 12l5 5 9-10',reject:'M6 6l12 12M18 6L6 18',markup:'M4 6h16M4 12h10M4 18h7M17 14l3 3-3 3',translate:'M4 5h9M8.5 3v2M6 5c0 4 3 7 6 8M11 5c-1 4-4 7-7 8M13 21l4-9 4 9M14.5 18h5',lock:'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',mlist:'M4 6h1M8 6h12M6 12h1M10 12h10M8 18h1M12 18h8',sort:'M4 6h7M4 12h5M4 18h3M17 4v16M14 17l3 3 3-3',shade:'M4 20l8-16 8 16zM8 13h8',bordb:'M4 4h16v16H4zM4 20h16',fx:'M5 19l6-14 6 14M7.5 14h7M18 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1z',mic:'M12 3a3 3 0 013 3v6a3 3 0 01-6 0V6a3 3 0 013-3zM5 11a7 7 0 0014 0M12 18v3',cover:'M5 3h14v18H5zM8 7h8M8 10h8M9 15h6M10 18h4',blank:'M6 3h9l4 4v14H6zM15 3v4h4',header:'M4 3h16v18H4zM4 8h16M8 5.5h8',footer:'M4 3h16v18H4zM4 16h16M8 18.5h8',dropcap:'M4 5h6v8H4zM13 6h7M13 10h7M4 16h16M4 20h16',watermark:'M5 3h14v18H5zM8 16l8-8M9 9.5l1.5-1.5M14.5 15l1.5-1.5',pagecolor:'M5 3h14v18H5zM12 9c2 3 3 4.5 3 6a3 3 0 01-6 0c0-1.5 1-3 3-6z',pageborder:'M3 3h18v18H3zM6 6h12v12H6z',toc:'M4 5h10M4 9h13M7 13h10M7 17h13M17 5h3M19 9h1',footnote:'M4 6h12M4 10h12M4 14h8M17 4v5M15.5 5.2L17 4M4 19h5M11 19h1',navpane:'M3 4h18v16H3zM9 4v16M5 8h2M5 11h2M5 14h2',focus:'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5M9 12h6',pilcrow:'M13 4v16M17 4v16M19 4H10a4 4 0 000 8h3',tplay:'M8 5l11 7-11 7z',tpause:'M8 5v14M16 5v14',tprev:'M6 5v14M18 5L9 12l9 7z',tnext:'M18 5v14M6 5l9 7-9 7z',tgear:'M12 9a3 3 0 100 6 3 3 0 000-6zM12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1',tclose:'M6 6l12 12M18 6L6 18',paste:'M9 4h6v3H9zM7 5H5v16h14V5h-2',cut:'M4 7a2 2 0 104 0a2 2 0 10-4 0M4 17a2 2 0 104 0a2 2 0 10-4 0M7.5 8.5L20 18M7.5 15.5L20 6',copy:'M8 8h12v12H8zM16 8V4H4v12h4',
  brush:'M4 4h12v5H4zM16 6h3v6h-8v3M10 15h2v6h-2z',clear:'M8 20h12M4 16l9-9 6 6-7 7H8z',marker:'M8 12l7-7 4 4-7 7zM8 12l-1 4 1 1 4-1',
  bullets:'M10 6h10M10 12h10M10 18h10M4 6a1 1 0 102 0a1 1 0 10-2 0M4 12a1 1 0 102 0a1 1 0 10-2 0M4 18a1 1 0 102 0a1 1 0 10-2 0',numbers:'M10 6h10M10 12h10M10 18h10M4 4h1.5v4M4 8h3M4 14.5c0-1.5 3-1.5 3 0S4 17 4 18.5h3',
  outdent:'M10 6h10M10 12h10M10 18h10M4 6h3M7 9l-3 3 3 3',indent:'M10 6h10M10 12h10M10 18h10M4 9l3 3-3 3',firstline:'M10 5h10M4 10h16M4 15h16M4 20h16M4 3v4',
@@ -1100,7 +1134,7 @@ function pageCss(){const[w,h]=pageDims(),[t,r,b,l]=st.m,bw=PBW[st.pbd],pad=bw?4:
  return `@page{size:${w}mm ${h}mm;margin:${t-pad}mm ${r-pad}mm ${b-pad}mm ${l-pad}mm;${bw?`border:${bw} #1f3864;padding:${pad}mm;`:''}${st.pc?`background:${st.pc};`:''}`+
   (st.hdr?`@top-center{content:${cssStr(st.hdr)};${f}}`:'')+(st.ftr?`@bottom-${st.pn?'left':'center'}{content:${cssStr(st.ftr)};${f}}`:'')+
   (st.pn?'@bottom-center{content:counter(page);font:11pt "Times New Roman",serif}':'')+'}'}
-function applyPage(){const[w,h]=pageDims(),[t,r,b,l]=st.m;const mob=isMob();if(typeof revUI==='function')revUI();if(typeof viewUI==='function')requestAnimationFrame(viewUI);
+function applyPage(){const[w,h]=pageDims(),[t,r,b,l]=st.m;const mob=isMob();if(typeof applyDesign==='function')applyDesign();if(typeof revUI==='function')revUI();if(typeof viewUI==='function')requestAnimationFrame(viewUI);
  $('#sheetWrap').style.width=mob?'100%':'';
  if(mob){sheet.style.width='100%';sheet.style.padding='14px 16px 56px'}else{sheet.style.width=w+'mm';sheet.style.padding=`${t}mm ${r}mm ${b}mm ${l}mm`}
  $('#mobBtn').classList.toggle('on',mob);
@@ -1190,7 +1224,7 @@ function inlineRuns(D,node,block,out){
    let und=false,str=false,bg=null;for(let a=e;a&&a!==block.parentElement;a=a.parentElement){const s=getComputedStyle(a);if(/underline/.test(s.textDecorationLine))und=true;if(/line-through/.test(s.textDecorationLine))str=true;if(!bg&&a!==block)bg=hex(s.backgroundColor);if(a===block)break}
    const va=e.closest('sub')?'sub':e.closest('sup')?'sup':cs.verticalAlign;
    const tce=e.closest('ins.tc,del.tc'),RunT=tce?(tce.tagName==='INS'?D.InsertedTextRun:D.DeletedTextRun):D.TextRun,tco=tce?{id:tcId(tce),author:tce.dataset.a||'Muallif',date:new Date(+tce.dataset.d||Date.now()).toISOString()}:{};
-   out.push(new RunT({...tco,text:txt,bold:+cs.fontWeight>=600,italics:cs.fontStyle==='italic',underline:und?{}:undefined,strike:str,subScript:va==='sub',superScript:va==='super'||va==='sup',
+   const blkCs=getComputedStyle(block);out.push(new RunT({...tco,allCaps:(cs.textTransform==='uppercase'||blkCs.textTransform==='uppercase')||undefined,smallCaps:(cs.fontVariantCaps==='small-caps'||blkCs.fontVariantCaps==='small-caps')||undefined,text:txt,bold:+cs.fontWeight>=600,italics:cs.fontStyle==='italic',underline:und?{}:undefined,strike:str,subScript:va==='sub',superScript:va==='super'||va==='sup',
     color:hex(cs.color)||undefined,font:cs.fontFamily.split(',')[0].replace(/["']/g,'').trim(),size:Math.round(parseFloat(cs.fontSize)*1.5),shading:bg?{type:D.ShadingType.CLEAR,color:'auto',fill:bg}:undefined}))}
   else if(n.nodeName==='BR')out.push(new D.TextRun({break:1}));
   else if(n.nodeName==='IMG'){const r=imgRun(D,n);if(r)out.push(r)}
@@ -1977,7 +2011,7 @@ $('section[data-view="options"]').addEventListener('change',e=>{const id=e.targe
  else if(id==='opFmt')OPT.fmt=e.target.value;else if(id==='opVer')OPT.ver=+e.target.value;else if(id==='opAC')OPT.ac=e.target.checked;else if(id==='opMAC')OPT.mac=e.target.checked;optSave()});
 $('#acAdd').addEventListener('click',()=>{const a=$('#acFrom').value.trim(),b=$('#acTo').value;if(!a||!b){toast('Ikkala maydonni toʻldiring');return}const l=ACU().filter(x=>x[0]!==a);l.push([a,b]);try{localStorage.setItem('hujjatACU',JSON.stringify(l))}catch(_){}$('#acFrom').value=$('#acTo').value='';renderOptions();toast('Qoʻshildi: '+a+' → '+b)});
 $('#acList').addEventListener('click',e=>{const i=e.target.closest('[data-acd]')?.dataset.acd;if(i===undefined)return;const l=ACU();l.splice(+i,1);try{localStorage.setItem('hujjatACU',JSON.stringify(l))}catch(_){}renderOptions()});
-function applyDefFont(){doc.style.fontFamily=`"${OPT.font}",serif`;doc.style.fontSize=OPT.size+'pt'}
+function applyDefFont(){const f=DS_READY&&st.ds&&DS_FONT[st.ds.font];doc.style.fontFamily=f&&f[2]?`"${f[2]}",serif`:`"${OPT.font}",serif`;doc.style.fontSize=OPT.size+'pt'}
 applyDefFont();
 
 /* ---------- faylni oynaga tortib tashlab ochish ---------- */
@@ -1986,6 +2020,38 @@ addEventListener('dragenter',e=>{if(isFileDrag(e)){dragN++;document.body.classLi
 addEventListener('dragleave',()=>{if(--dragN<=0){dragN=0;document.body.classList.remove('dragfile')}});
 addEventListener('dragover',e=>{if(isFileDrag(e))e.preventDefault()});
 addEventListener('drop',e=>{dragN=0;document.body.classList.remove('dragfile');const f=[...(e.dataTransfer?.files||[])].find(f=>/\.(docx|hujjat|txt|html?|md)$/i.test(f.name));if(f){e.preventDefault();openFile(f)}});
+
+/* ---------- Dizayn: hujjatni formatlash (mavzular, uslublar to'plami, ranglar, shriftlar, oraliq) ---------- */
+const DS_SETS=[['','Odatiy',{h:'font:13px Calibri Light;color:#2f5496',b:''}],['classic','Klassik',{h:'font:700 10px Times New Roman;text-align:center;text-transform:uppercase'}],['gost','Rasmiy (OʻzDSt)',{h:'font:700 9px Times New Roman;text-align:center;text-transform:uppercase'}],
+ ['modern','Zamonaviy',{h:'font:600 11px Segoe UI;border-bottom:2px solid #4472c4'}],['minimal','Minimal',{h:'font:300 13px Arial;color:#262626'}],['bar','Chiziqli',{h:'font:11px Calibri Light;border-left:4px solid #4472c4;padding-left:3px;background:#f2f2f2'}],['shaded','Fonli',{h:'font:11px Calibri;background:#4472c4;color:#fff;padding:1px 3px'}]];
+const DS_COL={office:['Office',['#4472c4','#2f5496','#2f5496','#1f3763']],osmon:['Osmon',['#0070c0','#005a9e','#0070c0','#003e6b']],bahor:['Bahor',['#70ad47','#4e8a2a','#538135','#375623']],anor:['Anor',['#c00000','#a50021','#c00000','#7b0016']],
+ oqshom:['Oqshom',['#7030a0','#5b2386','#7030a0','#3f1661']],oltin:['Oltin',['#bf8f00','#7f6000','#bf8f00','#5c4500']],zangori:['Zangori',['#0f7b6c','#0b5d52','#0f7b6c','#07453d']],kulrang:['Kulrang',['#595959','#262626','#404040','#595959']]};
+const DS_FONT={std:['Standart','Calibri Light','',`Sarlavha: Calibri Light · Matn: odatiy shrift`],office:['Office','Calibri Light','Calibri'],cambria:['Klassik Office','Cambria','Calibri'],times:['Times','Times New Roman','Times New Roman'],
+ georgia:['Georgia','Georgia','Georgia'],arial:['Arial','Arial','Arial'],segoe:['Segoe UI','Segoe UI Semibold','Segoe UI'],book:['Book Antiqua','Book Antiqua','Book Antiqua'],trebuchet:['Trebuchet','Trebuchet MS','Trebuchet MS'],century:['Century Gothic','Century Gothic','Century Gothic']};
+const DS_SP={std:['Standart','6pt',1.15],none:['Oraliqsiz','0pt',1],compact:['Ixcham','2pt',1],tight:['Zich','6pt',1],open:['Ochiq','10pt',1.15],relaxed:['Keng','12pt',1.5],double:['Ikkitalik','8pt',2]};
+const DS_THEME=[['Standart',{ss:'',col:'office',font:'std',sp:'std'}],['Osmon',{ss:'modern',col:'osmon',font:'segoe',sp:'open'}],['Bahor',{ss:'bar',col:'bahor',font:'trebuchet',sp:'open'}],['Anor',{ss:'classic',col:'anor',font:'georgia',sp:'std'}],
+ ['Oqshom',{ss:'shaded',col:'oqshom',font:'century',sp:'open'}],['Rasmiy',{ss:'gost',col:'kulrang',font:'times',sp:'std'}]];
+var DS_READY;
+function applyDesign(){if(!DS_READY)return;const d=st.ds||{};$$('#ssGal button').forEach(b=>b.classList.toggle('on',b.dataset.ss===(d.ss||'')));
+ [...doc.classList].filter(c=>c.startsWith('ss-')).forEach(c=>doc.classList.remove(c));if(d.ss)doc.classList.add('ss-'+d.ss);
+ const S=doc.style;['--acc','--h1c','--h2c','--h3c','--hf','--pa','--plh'].forEach(v=>S.removeProperty(v));
+ if(d.col&&DS_COL[d.col]&&(d.col!=='office'||!d.ss)){const[a,h1,h2,h3]=DS_COL[d.col][1];S.setProperty('--acc',a);if(!['classic','gost','minimal'].includes(d.ss)||d.colSet){S.setProperty('--h1c',h1);S.setProperty('--h2c',h2);S.setProperty('--h3c',h3)}}
+ const f=DS_FONT[d.font];if(f&&d.font!=='std'){S.setProperty('--hf',`"${f[1]}",sans-serif`)}
+ if(f&&f[2])doc.style.fontFamily=`"${f[2]}",serif`;else if(typeof applyDefFont==='function')applyDefFont();
+ const sp=DS_SP[d.sp];if(sp&&d.sp!=='std'){S.setProperty('--pa',sp[1]);S.setProperty('--plh',sp[2])}
+ if(typeof layout==='function')requestAnimationFrame(layout)}
+function setDesign(patch){st.ds={...(st.ds||{}),...patch};applyDesign();changed();store()}
+$('#ssGal').innerHTML=DS_SETS.map(([k,n,c])=>`<button data-ss="${k}" title="${n}"><b style="${c.h}">Sarlavha</b><i></i><i></i><i style="width:70%"></i><small>${n}</small></button>`).join('');
+$('#ssGal').addEventListener('click',e=>{const b=e.target.closest('[data-ss]');if(b)setDesign({ss:b.dataset.ss,colSet:false})});
+$('#thGrid').innerHTML=DS_THEME.map(([n,t],i)=>{const c=DS_COL[t.col][1],f=DS_FONT[t.font];return`<button data-th="${i}"><span class="ta" style="font-family:'${f[1]}';color:${c[1]}">Aa</span><span class="tc">${c.map(x=>`<span style="background:${x}"></span>`).join('')}</span><small>${n}</small></button>`}).join('');
+$('#thGrid').addEventListener('click',e=>{const b=e.target.closest('[data-th]');if(!b)return;closePops();setDesign({...DS_THEME[+b.dataset.th][1],colSet:DS_THEME[+b.dataset.th][1].ss!=='gost'});toast('Mavzu: '+DS_THEME[+b.dataset.th][0])});
+$('#colList').innerHTML=Object.entries(DS_COL).map(([k,[n,c]])=>`<button class="it" data-dcol="${k}"><span class="sws">${c.map(x=>`<i style="background:${x}"></i>`).join('')}</span>${n}</button>`).join('');
+$('#colList').addEventListener('click',e=>{const b=e.target.closest('[data-dcol]');if(!b)return;closePops();setDesign({col:b.dataset.dcol,colSet:true})});
+$('#fontList').innerHTML=Object.entries(DS_FONT).map(([k,[n,h,bd,desc]])=>`<button class="it" data-dfont="${k}"><b style="font-family:'${h}'">${n}</b><span style="font-family:'${bd||'Times New Roman'}'">${desc||(h===bd?h:h+' / '+bd)}</span></button>`).join('');
+$('#fontList').addEventListener('click',e=>{const b=e.target.closest('[data-dfont]');if(!b)return;closePops();setDesign({font:b.dataset.dfont})});
+$('#spList').innerHTML=Object.entries(DS_SP).map(([k,[n,pa,lh]])=>`<button class="it" data-dsp="${k}"><span class="spv" style="gap:${Math.round(lh*3)}px">${'<i></i>'.repeat(3)}</span>${n}<small>${pa}, ${String(lh).replace('.',',')}</small></button>`).join('');
+$('#spList').addEventListener('click',e=>{const b=e.target.closest('[data-dsp]');if(!b)return;closePops();setDesign({sp:b.dataset.dsp})});
+DS_READY=true;applyDesign();
 
 /* ---------- buyruqlar ---------- */
 const CMD={
@@ -1996,6 +2062,7 @@ const CMD={
  tcPrev:()=>tcStep(-1),tcNext:()=>tcStep(1),tcAccept:()=>tcOne(true),tcReject:()=>tcOne(false),tcAcceptAll:()=>tcAll(true),tcRejectAll:()=>tcAll(false),tcAcceptAllOff:()=>{tcAll(true);st.tc=false;tcUI();store()},
  protect:()=>protect(),
  pageSetup:()=>pageSetup(),
+ dsDefault:()=>{try{localStorage.setItem('hujjatDesignDef',JSON.stringify(st.ds||{}))}catch(_){}toast('Shu dizayn endi barcha yangi hujjatlarga qoʻllanadi')},
  readMode:()=>readMode(!document.body.classList.contains('readm')),immersive:()=>immersive(true),printLayout:()=>{if(isMob()){mobPref='off';try{localStorage.setItem('hujjatMob','off')}catch(_){}applyPage();autoZoom()}viewUI()},
  zoomPage:()=>{st.zoomAuto='page';autoZoom();store()},
  tblAsk:()=>tblAsk(),txt2tbl:()=>txt2tbl(),cellMerge:()=>cellMerge(),chart:()=>openChart(),qr:()=>insertQR(),bookmark:()=>bookmark(),
@@ -2130,7 +2197,7 @@ function saveRecents(a){for(let n=0;n<40;n++){try{localStorage.setItem('hujjatRe
 const isEmptyDoc=()=>!doc.innerText.replace(/\u200B/g,'').trim()&&!doc.querySelector('img,table,hr,.eq');
 function touchRecent(){if(isEmptyDoc())return;if(!curId)curId=uid();const all=recents(),old=all.find(x=>x.id===curId);
  const a=all.filter(x=>x.id!==curId);a.unshift({id:curId,title:$('#docTitle').value||'Hujjat',html:doc.innerHTML,st:{...st},t:Date.now(),pin:old?old.pin:false,file:fileHandle?fileHandle.name:(old&&old.file)||''});saveRecents(a.slice(0,20))}
-function newDoc(html,title){if(!okDiscard())return;store();curId=uid();fileHandle=null;doc.innerHTML=html||'<p><br></p>';$('#docTitle').value=title||'Hujjat1';document.title='Hujjat Pro';closeBack();changed();store(true);doc.focus()}
+function newDoc(html,title){if(!okDiscard())return;store();try{st.ds=JSON.parse(localStorage.getItem('hujjatDesignDef')||'{}')}catch(_){st.ds={}}curId=uid();fileHandle=null;doc.innerHTML=html||'<p><br></p>';$('#docTitle').value=title||'Hujjat1';document.title='Hujjat Pro';closeBack();changed();store(true);doc.focus()}
 function openRecent(id){const r=recents().find(x=>x.id===id);if(!r||!okDiscard())return;store();curId=r.id;fileHandle=null;doc.innerHTML=r.html;Object.assign(st,r.st||{});$('#docTitle').value=r.title;document.title=r.title+' — Hujjat Pro';applyPage();autoZoom();closeBack();changed();store(true)}
 function when(t){const d=new Date(t),n=new Date(),m=Math.round((n-d)/60000);if(m<1)return'Hozirgina';if(m<60)return m+' daqiqa oldin';
  const hm=d.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'});if(d.toDateString()===n.toDateString())return'Bugun, '+hm;
