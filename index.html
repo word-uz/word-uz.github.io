@@ -210,7 +210,7 @@ body.dark .more a,body.dark #back a{color:#9cc1ff}
  #doc{min-height:0!important}
  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  #sheet{background:transparent!important}.wmk,.pbd,.hfx,#navPane{display:none!important}body.navon #work{padding-left:0}
- #cmPane,#lockBar,#dictBar{display:none!important}body.cmon #work{padding-right:0}#doc span.cmt{background:none!important;border:0!important}
+ #cmPane,#lockBar,#dictBar,.lnum{display:none!important}#doc .cb{border:0;margin:0}#doc .cb::after{display:none}body.cmon #work{padding-right:0}#doc span.cmt{background:none!important;border:0!important}
  #wmPrint.on{display:block!important;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-45deg);z-index:0}
  #doc.marks :is(p,h1,h2,h3,h4,h5,h6,li,blockquote)::after,#doc.marks .pb::before{content:none!important}
  .pcopy{display:block!important;break-before:page;font-family:"Times New Roman",serif;font-size:14pt;line-height:1.15;overflow-wrap:anywhere}
@@ -374,6 +374,18 @@ body.nocmt #doc span.cmt{background:none;border:0}
 #lockBar{position:fixed;left:50%;top:calc(var(--bh)*6.6);transform:translateX(-50%);background:#fff4ce;color:#5c4400;border:1px solid #f0d58c;border-radius:6px;padding:6px 8px 6px 14px;z-index:40;display:none;align-items:center;gap:10px;font-size:var(--rf);box-shadow:0 4px 14px rgba(0,0,0,.12)}
 body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;background:#fff;border-radius:4px;padding:3px 10px;cursor:pointer;font:inherit}
 @media (max-width:700px){#cmPane{width:86vw}body.cmon #work{padding-right:6px}}
+
+/* --- Maket qo'shimchalari --- */
+.lrow{gap:6px}.lrow span{display:inline-block;min-width:68px;text-align:right}
+#doc .cb{display:block;height:0;border-top:1px dotted #9aa;margin:8pt 0;position:relative;break-after:column}
+#doc .cb::after{content:"Ustun uzilishi";position:absolute;left:50%;top:-8px;transform:translateX(-50%);background:#fff;color:#8a9;font:10px "Segoe UI",sans-serif;padding:0 6px}
+.lnum{position:absolute;width:24px;text-align:right;font:9pt "Times New Roman",serif;color:#777;pointer-events:none}
+.fset{margin:10px 0 4px;font-size:var(--rf)}.fset>b{display:block;margin-bottom:6px;color:var(--ac);font-weight:600}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}.g2 label,.row1{display:flex;flex-direction:column;gap:3px;font-size:var(--rf)}
+.g2 input,.g2 select,.fset>select,.row1 select{padding:6px 8px;border:1px solid var(--bd);border-radius:4px;font:inherit;background:var(--rb2);color:var(--tx);width:100%;box-sizing:border-box}
+.g2 label.rad{flex-direction:row;align-items:center;gap:6px}.g2 label.rad input{width:auto}
+.fset label.chk{display:flex;align-items:center;gap:8px;margin:5px 0;cursor:pointer}
+#psCustom{margin-top:8px}
 #symDlg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:70;display:none;align-items:flex-start;justify-content:center;padding-top:6vh}
 #symDlg.show{display:flex}
 #symDlg label{display:flex;align-items:center;gap:6px;font-size:var(--rf)}
@@ -546,15 +558,25 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
      <button class="b big" data-pop="oriPop"><i data-i="orient"></i>Yo'nalish</button>
      <button class="b big" data-pop="sizePop"><i data-i="size"></i>O'lcham</button>
      <button class="b big" data-pop="colsPop"><i data-i="columns"></i>Ustunlar</button>
-     <button class="b big" data-c="pageBreak"><i data-i="pagebreak"></i>Uzilish</button>
+     <div class="col">
+      <button class="b" data-pop="brkPop" title="Uzilishlar"><i data-i="breaks"></i>Uzilishlar ▾</button>
+      <button class="b" data-pop="lnPop" id="lnBtn" title="Qator raqamlari"><i data-i="lnum"></i>Qator raqamlari ▾</button>
+      <button class="b" data-c="pageSetup" title="Sahifa parametrlari oynasi"><i data-i="launch"></i>Parametrlar…</button>
+     </div>
     </div><div class="gl">Sahifa parametrlari</div></div>
    <div class="grp"><div class="gb"><div class="col">
-     <div class="row">Chap chekinish: <input class="s" id="indL" type="number" step="0.25" min="0" style="width:70px"> sm</div>
-     <div class="row">Qizil satr: <input class="s" id="indF" type="number" step="0.25" min="0" style="width:70px"> sm</div>
+     <div class="row lrow"><span>Chapdan:</span><input class="s" id="indL" type="number" step="0.25" min="0" style="width:62px"> sm</div>
+     <div class="row lrow"><span>O'ngdan:</span><input class="s" id="indR" type="number" step="0.25" min="0" style="width:62px"> sm</div>
+     <div class="row lrow"><span>Qizil satr:</span><input class="s" id="indF" type="number" step="0.25" style="width:62px"> sm</div>
     </div><div class="col">
-     <div class="row">Oldin: <input class="s" id="spB" type="number" step="1" min="0" style="width:64px"> pt</div>
-     <div class="row">Keyin: <input class="s" id="spA" type="number" step="1" min="0" style="width:64px"> pt</div>
+     <div class="row lrow"><span>Oldin:</span><input class="s" id="spB" type="number" step="1" min="0" style="width:58px"> pt</div>
+     <div class="row lrow"><span>Keyin:</span><input class="s" id="spA" type="number" step="1" min="0" style="width:58px"> pt</div>
+     <div class="row lrow"><button class="b" data-c="paraDlg" title="Xatboshi oynasi"><i data-i="launch"></i>Xatboshi…</button></div>
     </div></div><div class="gl">Xatboshi</div></div>
+   <div class="grp"><div class="gb">
+     <button class="b big" data-pop="wrapPop" title="Rasm atrofida matn qanday joylashadi"><i data-i="wrap"></i>Matnni o'rash</button>
+     <button class="b big" data-pop="rotPop" title="Rasmni aylantirish yoki aks ettirish"><i data-i="rotate"></i>Aylantirish</button>
+    </div><div class="gl">Joylashtirish</div></div>
   </div>
   <!-- HAVOLALAR -->
   <div class="panel" data-p="ref">
@@ -659,6 +681,30 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
 <div class="pop" id="accPop"><button class="it" data-x="tcAccept">Shu o'zgarishni qabul qilish</button><button class="it" data-x="tcAcceptAll">Barcha o'zgarishlarni qabul qilish</button><button class="it" data-x="tcAcceptAllOff">Hammasini qabul qilib, kuzatishni to'xtatish</button></div>
 <div class="pop" id="rejPop"><button class="it" data-x="tcReject">Shu o'zgarishni rad etish</button><button class="it" data-x="tcRejectAll">Barcha o'zgarishlarni rad etish</button></div>
 <div class="pop" id="trPop"><div class="psep" style="border:0;margin:0">Qaysi tilga:</div><button class="it" data-x="tr:en">Inglizcha</button><button class="it" data-x="tr:ru">Ruscha</button><button class="it" data-x="tr:uz">Oʻzbekcha</button><button class="it" data-x="tr:tr">Turkcha</button><button class="it" data-x="tr:de">Nemischa</button><button class="it" data-x="tr:fr">Fransuzcha</button><button class="it" data-x="tr:ar">Arabcha</button><button class="it" data-x="tr:zh">Xitoycha</button><button class="it" data-x="tr:ko">Koreyscha</button><small style="display:block;padding:4px 12px;color:var(--mut);white-space:normal;max-width:240px;line-height:1.4">Matn tarjima uchun MyMemory xizmatiga yuboriladi (internet kerak)</small></div>
+<div class="pop" id="brkPop"><div class="psep" style="border:0;margin:0">Sahifa uzilishlari</div>
+ <button class="it" data-x="pageBreak"><b>Sahifa</b><small>Ctrl+Enter</small></button><button class="it" data-x="colBreak"><b>Ustun</b><small>Ctrl+Shift+Enter</small></button><button class="it" data-x="wrapBreak"><b>Matnni o‘rash</b><small>rasm ostidan davom</small></button></div>
+<div class="pop" id="lnPop"><button class="it" data-x="ln:">Yoʻq</button><button class="it" data-x="ln:cont">Uzluksiz</button><button class="it" data-x="ln:page">Har sahifada qaytadan</button><small style="display:block;padding:4px 12px;color:var(--mut);white-space:normal;max-width:240px">Ekranda va .docx faylda chiqadi</small></div>
+<div class="pop" id="wrapPop"><button class="it" data-x="wrap:inline">Matn qatorida</button><button class="it" data-x="wrap:L">Kvadrat — rasm chapda</button><button class="it" data-x="wrap:R">Kvadrat — rasm oʻngda</button><button class="it" data-x="wrap:C">Yuqori va pastda (markazda)</button><small style="display:block;padding:4px 12px;color:var(--mut)">Avval rasmni bosib tanlang</small></div>
+<div class="pop" id="rotPop"><button class="it" data-x="rot:r">90° oʻngga burish</button><button class="it" data-x="rot:l">90° chapga burish</button><button class="it" data-x="rot:h">Gorizontal aks ettirish</button><button class="it" data-x="rot:v">Vertikal aks ettirish</button></div>
+<div id="psDlg" class="dlg"><div class="eqbox" style="width:min(460px,calc(100vw - 16px))">
+ <div class="eqtitle">Sahifa parametrlari <button class="btn" data-ps="x" style="padding:2px 10px">✕</button></div>
+ <div class="fset"><b>Hoshiyalar (sm)</b><div class="g2"><label>Yuqori<input type="number" id="psT" step="0.1" min="0"></label><label>Pastki<input type="number" id="psB" step="0.1" min="0"></label><label>Chap<input type="number" id="psL" step="0.1" min="0"></label><label>Oʻng<input type="number" id="psR" step="0.1" min="0"></label></div></div>
+ <div class="fset"><b>Yoʻnalish</b><div class="g2"><label class="rad"><input type="radio" name="psO" value="p"> Kitob</label><label class="rad"><input type="radio" name="psO" value="l"> Albom</label></div></div>
+ <div class="fset"><b>Qogʻoz oʻlchami</b><select id="psSize"></select><div class="g2" id="psCustom"><label>Eni (sm)<input type="number" id="psW" step="0.1" min="5"></label><label>Boʻyi (sm)<input type="number" id="psH" step="0.1" min="5"></label></div></div>
+ <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" data-ps="x">Bekor qilish</button><button class="btn pri" data-ps="ok">OK</button></div>
+</div></div>
+<div id="paDlg" class="dlg"><div class="eqbox" style="width:min(480px,calc(100vw - 16px))">
+ <div class="eqtitle">Xatboshi <button class="btn" data-pa="x" style="padding:2px 10px">✕</button></div>
+ <div class="fset"><b>Umumiy</b><label class="row1">Tekislash<select id="paAl"><option value="left">Chapga</option><option value="center">Markazga</option><option value="right">Oʻngga</option><option value="justify">Kenglik boʻyicha</option></select></label></div>
+ <div class="fset"><b>Chekinish (sm)</b><div class="g2"><label>Chapdan<input type="number" id="paL" step="0.25" min="0"></label><label>Oʻngdan<input type="number" id="paR" step="0.25" min="0"></label>
+  <label>Birinchi qator<select id="paSp"><option value="">Yoʻq</option><option value="first">Qizil satr</option><option value="hang">Osilgan</option></select></label><label>Qiymati<input type="number" id="paSv" step="0.25" min="0"></label></div></div>
+ <div class="fset"><b>Oraliq</b><div class="g2"><label>Oldin (pt)<input type="number" id="paB" step="1" min="0"></label><label>Keyin (pt)<input type="number" id="paA" step="1" min="0"></label>
+  <label>Qatorlar oraligʻi<select id="paLs"><option value="1">Bittalik</option><option value="1.15">1,15</option><option value="1.5">1,5</option><option value="2">Ikkitalik</option><option value="x">Koʻpaytiruvchi…</option></select></label><label>Qiymati<input type="number" id="paLv" step="0.05" min="0.5"></label></div></div>
+ <div class="fset"><b>Sahifaga joylashuv</b>
+  <label class="chk"><input type="checkbox" id="paWid"> Yetim qatorlarni nazorat qilish</label><label class="chk"><input type="checkbox" id="paKn"> Keyingisi bilan birga</label>
+  <label class="chk"><input type="checkbox" id="paKl"> Xatboshini boʻlmaslik</label><label class="chk"><input type="checkbox" id="paPb"> Yangi sahifadan boshlash</label></div>
+ <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" data-pa="x">Bekor qilish</button><button class="btn pri" data-pa="ok">OK</button></div>
+</div></div>
 <div class="pop" id="casePop">
  <button class="it" data-x="caseSent">Gap boshi katta harf</button><button class="it" data-x="caseLow">kichik harflar</button><button class="it" data-x="caseUp">KATTA HARFLAR</button><button class="it" data-x="caseCap">Har So'z Bosh Harf Bilan</button>
 </div>
@@ -715,7 +761,7 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
 <div id="wmPrint"></div>
 <div class="pop" id="oriPop"><button class="it" data-x="oriP">Kitob (vertikal)</button><button class="it" data-x="oriL">Albom (gorizontal)</button></div>
 <div class="pop" id="sizePop"></div>
-<div class="pop" id="colsPop"><button class="it" data-x="cols1">Bitta</button><button class="it" data-x="cols2">Ikkita</button><button class="it" data-x="cols3">Uchta</button></div>
+<div class="pop" id="colsPop"><button class="it" data-x="cols1">Bitta</button><button class="it" data-x="cols2">Ikkita</button><button class="it" data-x="cols3">Uchta</button><button class="it" data-x="colLine" id="colLineIt">Ustunlar orasida chiziq</button></div>
 <div id="findBox">
  <h3><span id="fTitle">Topish va almashtirish</span><button class="btn" id="fClose" style="padding:2px 10px">✕</button></h3>
  <input class="s" id="fFind" placeholder="Nimani topish">
@@ -795,7 +841,7 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const doc=$('#doc'),sheet=$('#sheet'),work=$('#work');
-const I={cmt:'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',cmtdel:'M4 5h16v11H9l-5 4zM9 8l6 6M15 8l-6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',cmtshow:'M4 5h16v11H9l-5 4zM12 8v.01M12 11v3',track:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4M14 20h6',accept:'M5 12l5 5 9-10',reject:'M6 6l12 12M18 6L6 18',markup:'M4 6h16M4 12h10M4 18h7M17 14l3 3-3 3',translate:'M4 5h9M8.5 3v2M6 5c0 4 3 7 6 8M11 5c-1 4-4 7-7 8M13 21l4-9 4 9M14.5 18h5',lock:'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',mlist:'M4 6h1M8 6h12M6 12h1M10 12h10M8 18h1M12 18h8',sort:'M4 6h7M4 12h5M4 18h3M17 4v16M14 17l3 3 3-3',shade:'M4 20l8-16 8 16zM8 13h8',bordb:'M4 4h16v16H4zM4 20h16',fx:'M5 19l6-14 6 14M7.5 14h7M18 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1z',mic:'M12 3a3 3 0 013 3v6a3 3 0 01-6 0V6a3 3 0 013-3zM5 11a7 7 0 0014 0M12 18v3',cover:'M5 3h14v18H5zM8 7h8M8 10h8M9 15h6M10 18h4',blank:'M6 3h9l4 4v14H6zM15 3v4h4',header:'M4 3h16v18H4zM4 8h16M8 5.5h8',footer:'M4 3h16v18H4zM4 16h16M8 18.5h8',dropcap:'M4 5h6v8H4zM13 6h7M13 10h7M4 16h16M4 20h16',watermark:'M5 3h14v18H5zM8 16l8-8M9 9.5l1.5-1.5M14.5 15l1.5-1.5',pagecolor:'M5 3h14v18H5zM12 9c2 3 3 4.5 3 6a3 3 0 01-6 0c0-1.5 1-3 3-6z',pageborder:'M3 3h18v18H3zM6 6h12v12H6z',toc:'M4 5h10M4 9h13M7 13h10M7 17h13M17 5h3M19 9h1',footnote:'M4 6h12M4 10h12M4 14h8M17 4v5M15.5 5.2L17 4M4 19h5M11 19h1',navpane:'M3 4h18v16H3zM9 4v16M5 8h2M5 11h2M5 14h2',focus:'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5M9 12h6',pilcrow:'M13 4v16M17 4v16M19 4H10a4 4 0 000 8h3',tplay:'M8 5l11 7-11 7z',tpause:'M8 5v14M16 5v14',tprev:'M6 5v14M18 5L9 12l9 7z',tnext:'M18 5v14M6 5l9 7-9 7z',tgear:'M12 9a3 3 0 100 6 3 3 0 000-6zM12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1',tclose:'M6 6l12 12M18 6L6 18',paste:'M9 4h6v3H9zM7 5H5v16h14V5h-2',cut:'M4 7a2 2 0 104 0a2 2 0 10-4 0M4 17a2 2 0 104 0a2 2 0 10-4 0M7.5 8.5L20 18M7.5 15.5L20 6',copy:'M8 8h12v12H8zM16 8V4H4v12h4',
+const I={breaks:'M6 3h12v6H6zM6 15h12v6H6zM3 12h3M9 12h2M13 12h2M18 12h3',lnum:'M4 6h1M4 12h1M4 18h1M8 6h12M8 12h12M8 18h9',launch:'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',wrap:'M4 5h16M4 19h16M4 9h7M4 13h7M14 9h6v6h-6z',rotate:'M20 12a8 8 0 11-3-6.2M20 4v5h-5',cmt:'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',cmtdel:'M4 5h16v11H9l-5 4zM9 8l6 6M15 8l-6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',cmtshow:'M4 5h16v11H9l-5 4zM12 8v.01M12 11v3',track:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4M14 20h6',accept:'M5 12l5 5 9-10',reject:'M6 6l12 12M18 6L6 18',markup:'M4 6h16M4 12h10M4 18h7M17 14l3 3-3 3',translate:'M4 5h9M8.5 3v2M6 5c0 4 3 7 6 8M11 5c-1 4-4 7-7 8M13 21l4-9 4 9M14.5 18h5',lock:'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',mlist:'M4 6h1M8 6h12M6 12h1M10 12h10M8 18h1M12 18h8',sort:'M4 6h7M4 12h5M4 18h3M17 4v16M14 17l3 3 3-3',shade:'M4 20l8-16 8 16zM8 13h8',bordb:'M4 4h16v16H4zM4 20h16',fx:'M5 19l6-14 6 14M7.5 14h7M18 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1z',mic:'M12 3a3 3 0 013 3v6a3 3 0 01-6 0V6a3 3 0 013-3zM5 11a7 7 0 0014 0M12 18v3',cover:'M5 3h14v18H5zM8 7h8M8 10h8M9 15h6M10 18h4',blank:'M6 3h9l4 4v14H6zM15 3v4h4',header:'M4 3h16v18H4zM4 8h16M8 5.5h8',footer:'M4 3h16v18H4zM4 16h16M8 18.5h8',dropcap:'M4 5h6v8H4zM13 6h7M13 10h7M4 16h16M4 20h16',watermark:'M5 3h14v18H5zM8 16l8-8M9 9.5l1.5-1.5M14.5 15l1.5-1.5',pagecolor:'M5 3h14v18H5zM12 9c2 3 3 4.5 3 6a3 3 0 01-6 0c0-1.5 1-3 3-6z',pageborder:'M3 3h18v18H3zM6 6h12v12H6z',toc:'M4 5h10M4 9h13M7 13h10M7 17h13M17 5h3M19 9h1',footnote:'M4 6h12M4 10h12M4 14h8M17 4v5M15.5 5.2L17 4M4 19h5M11 19h1',navpane:'M3 4h18v16H3zM9 4v16M5 8h2M5 11h2M5 14h2',focus:'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5M9 12h6',pilcrow:'M13 4v16M17 4v16M19 4H10a4 4 0 000 8h3',tplay:'M8 5l11 7-11 7z',tpause:'M8 5v14M16 5v14',tprev:'M6 5v14M18 5L9 12l9 7z',tnext:'M18 5v14M6 5l9 7-9 7z',tgear:'M12 9a3 3 0 100 6 3 3 0 000-6zM12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1',tclose:'M6 6l12 12M18 6L6 18',paste:'M9 4h6v3H9zM7 5H5v16h14V5h-2',cut:'M4 7a2 2 0 104 0a2 2 0 10-4 0M4 17a2 2 0 104 0a2 2 0 10-4 0M7.5 8.5L20 18M7.5 15.5L20 6',copy:'M8 8h12v12H8zM16 8V4H4v12h4',
  brush:'M4 4h12v5H4zM16 6h3v6h-8v3M10 15h2v6h-2z',clear:'M8 20h12M4 16l9-9 6 6-7 7H8z',marker:'M8 12l7-7 4 4-7 7zM8 12l-1 4 1 1 4-1',
  bullets:'M10 6h10M10 12h10M10 18h10M4 6a1 1 0 102 0a1 1 0 10-2 0M4 12a1 1 0 102 0a1 1 0 10-2 0M4 18a1 1 0 102 0a1 1 0 10-2 0',numbers:'M10 6h10M10 12h10M10 18h10M4 4h1.5v4M4 8h3M4 14.5c0-1.5 3-1.5 3 0S4 17 4 18.5h3',
  outdent:'M10 6h10M10 12h10M10 18h10M4 6h3M7 9l-3 3 3 3',indent:'M10 6h10M10 12h10M10 18h10M4 9l3 3-3 3',firstline:'M10 5h10M4 10h16M4 15h16M4 20h16M4 3v4',
@@ -880,7 +926,8 @@ $('#imgBar').addEventListener('click',e=>{const b=e.target.closest('[data-im]');
  showImgBar();changed()});
 
 /* ---------- sahifa maketi ---------- */
-function pageDims(){let[w,h]=SIZES[st.size];if(st.ori==='l')[w,h]=[h,w];return[w,h]}
+const paperWH=()=>SIZES[st.size]||(st.csz&&st.csz.length===2?st.csz:[210,297]);
+function pageDims(){let[w,h]=paperWH();if(st.ori==='l')[w,h]=[h,w];return[w,h]}
 /* Mobil ko'rinish: tor ekranda varaq ekran kengligiga cho'ziladi, matn o'qiladigan o'lchamda qoladi (Word'dagi Mobile View kabi) */
 let mobPref=null;try{mobPref=localStorage.getItem('hujjatMob')}catch(_){}
 const mq=matchMedia('(max-width:760px)');
@@ -896,13 +943,14 @@ function applyPage(){const[w,h]=pageDims(),[t,r,b,l]=st.m;const mob=isMob();if(t
  if(mob){sheet.style.width='100%';sheet.style.padding='14px 16px 56px'}else{sheet.style.width=w+'mm';sheet.style.padding=`${t}mm ${r}mm ${b}mm ${l}mm`}
  $('#mobBtn').classList.toggle('on',mob);
  /* bitta ustunda multicol yoqilmaydi: aks holda chop etishda sahifa uzilishi ishlamaydi */
- doc.style.columnCount=(mob||st.cols<2)?'':st.cols;doc.style.columnGap=(mob||st.cols<2)?'':'12mm';
+ doc.style.columnCount=(mob||st.cols<2)?'':st.cols;doc.style.columnGap=(mob||st.cols<2)?'':'12mm';doc.style.columnRule=(!mob&&st.cols>1&&st.colLine)?'1px solid #888':'';
  $('#pageCss').textContent=pageCss();sheet.style.background=st.pc||'';
  $('#wmPrint').textContent=st.wm||'';$('#wmPrint').classList.toggle('on',!!st.wm);
- for(const[id,on]of[['wmBtn',st.wm],['pcBtn',st.pc],['pbBtn',st.pbd],['hdrBtn',st.hdr],['ftrBtn',st.ftr]])$('#'+id).classList.toggle('on',!!on);
+ $('#colLineIt').classList.toggle('cur',!!st.colLine);$$('#lnPop [data-x]').forEach(b=>b.classList.toggle('cur',b.dataset.x==='ln:'+(st.ln||'')));
+ for(const[id,on]of[['wmBtn',st.wm],['pcBtn',st.pc],['pbBtn',st.pbd],['hdrBtn',st.hdr],['ftrBtn',st.ftr],['lnBtn',st.ln]])$('#'+id).classList.toggle('on',!!on);
  $('#pnBtn').classList.toggle('on',st.pn);layout()}
 function layout(){if(matchMedia('print').matches)return;
- sheet.querySelectorAll('.mark,.pnum,.wmk,.pbd,.hfx').forEach(e=>e.remove());
+ sheet.querySelectorAll('.mark,.pnum,.wmk,.pbd,.hfx,.lnum').forEach(e=>e.remove());
  if(isMob()){doc.style.minHeight='55vh';pages=Math.max(1,Math.ceil(doc.scrollHeight/(innerHeight*.8)));updateStatus();return}
  const[w,h]=pageDims(),[t,,b]=st.m;const ch=(h-t-b)*MM;
  /* sahifa uzilishi: keyingi matn haqiqatan yangi sahifadan boshlanadi (Word'dagidek) */
@@ -918,6 +966,7 @@ function layout(){if(matchMedia('print').matches)return;
    Object.assign(d.style,{top:top+'px',height:(bot-top)+'px',left:(l2-4)*MM+'px',right:(r2-4)*MM+'px',border:PBW[st.pbd]+' #1f3864'});sheet.appendChild(d)}}
  if(st.hdr){const x=document.createElement('div');x.className='hfx';x.style.top=(t*MM*.42)+'px';x.innerHTML='<span></span>';x.firstChild.textContent=st.hdr;sheet.appendChild(x)}
  if(st.ftr){const x=document.createElement('div');x.className='hfx';x.style.top=(t*MM+n*ch+b*MM*.35)+'px';x.style.padding=`0 ${st.m[1]}mm 0 ${st.m[3]}mm`;x.innerHTML='<span></span>';x.firstChild.textContent=st.ftr;if(st.pn)x.firstChild.style.textAlign='left';sheet.appendChild(x)}
+ if(st.ln)lineNumbers(t,ch);
  pages=n;updateStatus();if($('#navPane').classList.contains('show'))navRender();
  /* mundarijadagi sahifa raqamlari va sarlavha matnlari o'zi yangilanib turadi */
  doc.querySelectorAll('.toc p[data-h]').forEach(p=>{const h=document.getElementById(p.dataset.h);if(!h)return;const n=String(headPage(h)),t=h.innerText.trim();if(p.lastChild.textContent!==n)p.lastChild.textContent=n;if(p.firstChild.textContent!==t)p.firstChild.textContent=t})}
@@ -942,7 +991,7 @@ function updateUI(){
  const fam=cs.fontFamily.split(',')[0].replace(/["']/g,'').trim();const fs=$('#fontSel');if(![...fs.options].some(o=>o.value===fam)){fs.add(new Option(fam,fam))}fs.value=fam;
  const pt=Math.round(parseFloat(cs.fontSize)*.75*2)/2;const ss=$('#sizeSel');if(![...ss.options].some(o=>+o.value===pt))ss.add(new Option(pt,pt));ss.value=pt;
  const blk=e.closest('h1,h2,h3,h4,blockquote,pre,p,li');const tag=blk&&doc.contains(blk)?blk.tagName.toLowerCase():'p';$$('.sty').forEach(s=>s.classList.toggle('on',s.dataset.tag===tag));
- const bl=blocks()[0];if(bl){const bs=getComputedStyle(bl);$('#indL').value=(parseFloat(bs.marginLeft)/MM/10).toFixed(2)*1;$('#indF').value=(parseFloat(bs.textIndent)/MM/10).toFixed(2)*1;$('#spB').value=Math.round(parseFloat(bs.marginTop)*.75);$('#spA').value=Math.round(parseFloat(bs.marginBottom)*.75)}
+ const bl=blocks()[0];if(bl){const bs=getComputedStyle(bl);$('#indL').value=(parseFloat(bs.marginLeft)/MM/10).toFixed(2)*1;$('#indR').value=(parseFloat(bs.marginRight)/MM/10).toFixed(2)*1;$('#indF').value=(parseFloat(bs.textIndent)/MM/10).toFixed(2)*1;$('#spB').value=Math.round(parseFloat(bs.marginTop)*.75);$('#spA').value=Math.round(parseFloat(bs.marginBottom)*.75)}
  updateStatus()}
 
 /* ---------- saqlash ---------- */
@@ -969,7 +1018,8 @@ const hex=c=>{const m=(c||'').match(/\d+(\.\d+)?/g);if(!m||m.length<3)return nul
 function dataBytes(src){const b=atob(src.split(',')[1]);const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
 function imgRun(D,img){if(!/^data:image\/(png|jpe?g|gif|bmp)/i.test(img.src))return null;const t=img.src.match(/^data:image\/(\w+)/i)[1].toLowerCase().replace('jpeg','jpg');
  const[pw]=pageDims();const maxW=(pw-st.m[1]-st.m[3])*MM;let w=parseFloat(getComputedStyle(img).width)||img.naturalWidth;w=Math.min(w,maxW);const h=w*(img.naturalHeight/img.naturalWidth||1);
- return new D.ImageRun({type:t,data:dataBytes(img.src),transformation:{width:Math.round(w),height:Math.round(h)}})}
+ const fl=getComputedStyle(img).float,flo=(fl==='left'||fl==='right')?{horizontalPosition:{relative:D.HorizontalPositionRelativeFrom.COLUMN,align:fl==='left'?D.HorizontalPositionAlign.LEFT:D.HorizontalPositionAlign.RIGHT},verticalPosition:{relative:D.VerticalPositionRelativeFrom.PARAGRAPH,offset:0},wrap:{type:D.TextWrappingType.SQUARE,side:D.TextWrappingSide.BOTH_SIDES},margins:{left:fl==='right'?114300:0,right:fl==='left'?114300:0}}:undefined;
+ return new D.ImageRun({type:t,data:dataBytes(img.src),transformation:{width:Math.round(w),height:Math.round(h)},floating:flo})}
 function inlineRuns(D,node,block,out){
  for(const n of node.childNodes){
   if(n.nodeType===3){const txt=n.nodeValue.replace(/​/g,'').replace(/\s+/g,' ');if(!txt)continue;const e=n.parentElement,cs=getComputedStyle(e);
@@ -988,7 +1038,8 @@ function inlineRuns(D,node,block,out){
 function paraOpts(D,el){const cs=getComputedStyle(el);const al={center:D.AlignmentType.CENTER,right:D.AlignmentType.RIGHT,justify:D.AlignmentType.JUSTIFIED}[cs.textAlign];
  const fs=parseFloat(cs.fontSize),lh=cs.lineHeight==='normal'?1.15:parseFloat(cs.lineHeight)/fs;
  const o={alignment:al,spacing:{before:Math.round(parseFloat(cs.marginTop)*TW),after:Math.round(parseFloat(cs.marginBottom)*TW),line:Math.round(240*lh),lineRule:D.LineRuleType.AUTO}};
- const ml=parseFloat(cs.marginLeft)||0,ti=parseFloat(cs.textIndent)||0;if(ml||ti)o.indent={left:Math.round(ml*TW),firstLine:ti>0?Math.round(ti*TW):undefined,hanging:ti<0?Math.round(-ti*TW):undefined};
+ const ml=parseFloat(cs.marginLeft)||0,mr=parseFloat(cs.marginRight)||0,ti=parseFloat(cs.textIndent)||0;if(ml||ti||mr)o.indent={left:Math.round(ml*TW),right:mr?Math.round(mr*TW):undefined,firstLine:ti>0?Math.round(ti*TW):undefined,hanging:ti<0?Math.round(-ti*TW):undefined};
+ if(cs.breakAfter==='avoid')o.keepNext=true;if(cs.breakInside==='avoid')o.keepLines=true;if(cs.breakBefore==='page')o.pageBreakBefore=true;
  const bg=hex(cs.backgroundColor);if(bg&&!el.closest('td,th'))o.shading={type:D.ShadingType.CLEAR,color:'auto',fill:bg};
  const bd={};for(const sd of['Top','Right','Bottom','Left'])if(cs['border'+sd+'Style']!=='none'&&parseFloat(cs['border'+sd+'Width'])>0)bd[sd.toLowerCase()]={style:D.BorderStyle.SINGLE,size:Math.max(4,Math.round(parseFloat(cs['border'+sd+'Width'])*6)),color:hex(cs['border'+sd+'Color'])||'000000',space:2};
  if(Object.keys(bd).length&&!el.closest('td,th'))o.border=bd;
@@ -1008,6 +1059,7 @@ function blocksToDocx(D,parent,out,lvl=0){
   if(n.nodeType===3){if(n.nodeValue.trim())out.push(new D.Paragraph({children:[new D.TextRun(n.nodeValue)]}));continue}
   if(n.nodeType!==1)continue;const tg=n.nodeName;
   if(n.classList.contains('pb')){out.push(new D.Paragraph({children:[new D.PageBreak()]}));continue}
+  if(n.classList.contains('cb')){out.push(new D.Paragraph({children:[new D.ColumnBreak()]}));continue}
   if(n.classList.contains('toc')){const[pw]=pageDims(),tw=Math.round((pw-st.m[1]-st.m[3])*56.69);
    out.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:160},children:[new D.TextRun({text:'MUNDARIJA',bold:true})]}));
    n.querySelectorAll('p[data-h]').forEach(p=>out.push(new D.Paragraph({tabStops:[{type:D.TabStopType.RIGHT,position:tw,leader:'dot'}],indent:{left:(+p.className.slice(2)-1)*400},
@@ -1033,7 +1085,7 @@ async function buildDocx(){let D;
  try{await loadJS('https://cdn.jsdelivr.net/npm/docx@9.0.2/build/index.umd.js');D=window.docx}catch(e){toast('Internet kerak: .docx yaratib bo\'lmadi. HTML yoki PDF qilib saqlang.');return null}
  try{if(selImg)selImg.classList.remove('sel');olInst=0;NUMCFG={};TCID=new Map();CMID=new Map();doc.classList.add('xp');
   const kids=blocksToDocx(D,doc,[]);doc.classList.remove('xp');if(selImg)selImg.classList.add('sel');
-  const tw=mm=>Math.round(mm*56.6929);const[sw,sh]=SIZES[st.size];const[t,r,b,l]=st.m;
+  const tw=mm=>Math.round(mm*56.6929);const[sw,sh]=paperWH();const[t,r,b,l]=st.m;
   const lvls=(fmt,txt)=>[0,1,2].map(i=>({level:i,format:fmt,text:txt(i),alignment:D.AlignmentType.LEFT,style:{paragraph:{indent:{left:tw(9+i*9),hanging:tw(6)}}}}));
   const d=new D.Document({creator:'Hujjat Pro',title:$('#docTitle').value,
    styles:{default:{document:{run:{font:'Times New Roman',size:28}}}},
@@ -1041,9 +1093,9 @@ async function buildDocx(){let D;
    background:st.pc?{color:st.pc.slice(1)}:undefined,
    comments:CMID.size?{children:[...CMID].map(([c,k])=>{const x=st.cm[c]||{};return{id:k,author:x.a||'Muallif',date:new Date(x.d||Date.now()),children:[new D.Paragraph({children:[new D.TextRun(x.t||'')]}),...(x.rp||[]).map(r=>new D.Paragraph({children:[new D.TextRun({text:r.a+': ',bold:true}),new D.TextRun(r.t)]}))]}})}:undefined,
    sections:[{properties:{page:{size:{width:tw(sw),height:tw(sh),orientation:st.ori==='l'?D.PageOrientation.LANDSCAPE:D.PageOrientation.PORTRAIT},margin:{top:tw(t),right:tw(r),bottom:tw(b),left:tw(l)},
-    borders:PBW[st.pbd]?(()=>{const bs={style:{single:D.BorderStyle.SINGLE,double:D.BorderStyle.DOUBLE,thick:D.BorderStyle.THICK,dashed:D.BorderStyle.DASHED,dotted:D.BorderStyle.DOTTED}[st.pbd],size:st.pbd==='thick'?24:st.pbd==='double'?6:8,color:'1F3864',space:24};return{pageBorders:{display:'allPages',offsetFrom:'page'},pageBorderTop:bs,pageBorderRight:bs,pageBorderBottom:bs,pageBorderLeft:bs}})():undefined},column:st.cols>1?{count:st.cols,space:tw(12)}:undefined},
+    borders:PBW[st.pbd]?(()=>{const bs={style:{single:D.BorderStyle.SINGLE,double:D.BorderStyle.DOUBLE,thick:D.BorderStyle.THICK,dashed:D.BorderStyle.DASHED,dotted:D.BorderStyle.DOTTED}[st.pbd],size:st.pbd==='thick'?24:st.pbd==='double'?6:8,color:'1F3864',space:24};return{pageBorders:{display:'allPages',offsetFrom:'page'},pageBorderTop:bs,pageBorderRight:bs,pageBorderBottom:bs,pageBorderLeft:bs}})():undefined},lineNumbers:st.ln?{countBy:1,restart:st.ln==='page'?D.LineNumberRestartFormat.NEW_PAGE:D.LineNumberRestartFormat.CONTINUOUS}:undefined,column:st.cols>1?{count:st.cols,space:tw(12),separate:!!st.colLine}:undefined},
     headers:st.hdr?{default:new D.Header({children:[new D.Paragraph({alignment:D.AlignmentType.CENTER,children:[new D.TextRun({text:st.hdr,font:'Times New Roman',size:20,color:'444444'})]})]})}:undefined,
-    footers:(st.pn||st.ftr)?{default:new D.Footer({children:[new D.Paragraph({alignment:st.ftr&&st.pn?D.AlignmentType.LEFT:D.AlignmentType.CENTER,tabStops:st.ftr&&st.pn?[{type:D.TabStopType.CENTER,position:tw((SIZES[st.size][0]-r-l)/2)}]:undefined,
+    footers:(st.pn||st.ftr)?{default:new D.Footer({children:[new D.Paragraph({alignment:st.ftr&&st.pn?D.AlignmentType.LEFT:D.AlignmentType.CENTER,tabStops:st.ftr&&st.pn?[{type:D.TabStopType.CENTER,position:tw((paperWH()[0]-r-l)/2)}]:undefined,
      children:[...(st.ftr?[new D.TextRun({text:st.ftr,font:'Times New Roman',size:20,color:'444444'})]:[]),...(st.pn?[new D.TextRun({children:[st.ftr?'\t':'',D.PageNumber.CURRENT],font:'Times New Roman',size:22})]:[])]})]})}:undefined,
     children:kids.length?kids:[new D.Paragraph('')]}]});
   return await embedHtml(await D.Packer.toBlob(d))}
@@ -1486,6 +1538,58 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('#trDlg,#wcDlg').
  if(e.ctrlKey&&e.shiftKey&&e.code==='KeyE'){e.preventDefault();CMD.tcToggle()}
  if(e.ctrlKey&&e.shiftKey&&e.code==='KeyG'){e.preventDefault();wordCount()}});
 
+/* ---------- Maket: qator raqamlari ---------- */
+function lineNumbers(t,ch){const z=curZoom(),sr=sheet.getBoundingClientRect(),dr=doc.getBoundingClientRect(),dl=(dr.left-sr.left)/z,cols=Math.max(1,+doc.style.columnCount||1),gap=cols>1?12*MM:0,cw=(dr.width/z-gap*(cols-1))/cols;
+ /* har bir ustundagi qatorlar alohida; raqam o'sha ustunning chap tomonida */
+ const seen=new Set(),lines=[];
+ doc.querySelectorAll('p,h1,h2,h3,h4,h5,h6,li,blockquote').forEach(b=>{if(b.closest('.toc,td,th')||b.querySelector('p,li'))return;const r=document.createRange();r.selectNodeContents(b);
+  [...r.getClientRects()].filter(x=>x.width>0).forEach(x=>{const y=(x.bottom-sr.top)/z,c=Math.min(cols-1,Math.max(0,Math.floor(((x.left-dr.left)/z+2)/(cw+gap)))),pg=Math.floor((y-t*MM)/ch),key=pg+'|'+c+'|'+Math.round(y/4);
+   if(seen.has(key))return;seen.add(key);lines.push({y,c,pg})})});
+ lines.sort((a,b)=>a.pg-b.pg||a.c-b.c||a.y-b.y);let k=0,pp=-1;const frag=document.createDocumentFragment();
+ lines.forEach(L=>{if(st.ln==='page'&&L.pg!==pp){k=0;pp=L.pg}k++;const e=document.createElement('div');e.className='lnum';e.textContent=k;e.style.top=(L.y-16)+'px';e.style.left=(dl+L.c*(cw+gap)-30)+'px';frag.appendChild(e)});
+ sheet.appendChild(frag)}
+
+/* ---------- Maket: rasmni o'rash va aylantirish ---------- */
+function imgWrap(k){if(!selImg){toast('Avval rasmni bosib tanlang');return}const s=selImg.style;
+ if(k==='inline'){s.float='';s.display='';s.margin=''}else if(k==='L'){s.float='left';s.display='';s.margin='0 12pt 6pt 0'}else if(k==='R'){s.float='right';s.display='';s.margin='0 0 6pt 12pt'}else{s.float='';s.display='block';s.margin='6pt auto'}
+ showImgBar();changed()}
+function imgRotate(k){if(!selImg){toast('Avval rasmni bosib tanlang');return}const im=selImg,w0=im.naturalWidth,h0=im.naturalHeight;if(!w0)return;
+ const c=document.createElement('canvas'),turn=k==='r'||k==='l';c.width=turn?h0:w0;c.height=turn?w0:h0;const g=c.getContext('2d');
+ if(k==='r'){g.translate(h0,0);g.rotate(Math.PI/2)}else if(k==='l'){g.translate(0,w0);g.rotate(-Math.PI/2)}else if(k==='h'){g.translate(w0,0);g.scale(-1,1)}else{g.translate(0,h0);g.scale(1,-1)}
+ g.drawImage(im,0,0);const png=/^data:image\/png/.test(im.src);im.src=png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.92);im.onload=()=>{showImgBar();changed()}}
+
+/* ---------- Sahifa parametrlari oynasi ---------- */
+function pageSetup(){const[t,r,b,l]=st.m;$('#psT').value=t/10;$('#psR').value=r/10;$('#psB').value=b/10;$('#psL').value=l/10;
+ $$('#psDlg [name="psO"]').forEach(x=>x.checked=x.value===(st.ori==='l'?'l':'p'));
+ $('#psSize').innerHTML=Object.entries(SIZES).map(([k,[w,h]])=>`<option value="${k}">${k} (${w/10} × ${h/10} sm)</option>`).join('')+'<option value="Maxsus">Maxsus oʻlcham…</option>';
+ $('#psSize').value=SIZES[st.size]?st.size:'Maxsus';const[pw,ph]=paperWH();$('#psW').value=pw/10;$('#psH').value=ph/10;psToggle();$('#psDlg').classList.add('show')}
+function psToggle(){$('#psCustom').style.display=$('#psSize').value==='Maxsus'?'':'none'}
+$('#psSize').addEventListener('change',()=>{const v=$('#psSize').value;if(SIZES[v]){$('#psW').value=SIZES[v][0]/10;$('#psH').value=SIZES[v][1]/10}psToggle()});
+$('#psDlg').addEventListener('click',e=>{const a=e.target.closest('[data-ps]')?.dataset.ps;if(e.target.id==='psDlg'||a==='x'){$('#psDlg').classList.remove('show');return}if(a!=='ok')return;
+ const n=id=>Math.max(0,parseFloat($('#'+id).value)||0)*10;const m=[n('psT'),n('psR'),n('psB'),n('psL')];
+ const sz=$('#psSize').value,w=n('psW'),h=n('psH');if(sz==='Maxsus'&&(w<50||h<50)){toast('Qogʻoz oʻlchami kamida 5 sm');return}
+ const[pw,ph]=sz==='Maxsus'?[w,h]:SIZES[sz];const ori=$('#psDlg [name="psO"]:checked')?.value||'p',W=ori==='l'?ph:pw,H=ori==='l'?pw:ph;
+ if(m[1]+m[3]>W-20||m[0]+m[2]>H-20){toast('Hoshiyalar juda katta — matnga joy qolmaydi');return}
+ st.m=m;st.ori=ori;st.size=sz;if(sz==='Maxsus')st.csz=[w,h];$('#psDlg').classList.remove('show');applyPage();autoZoom();store();toast('Sahifa parametrlari qoʻllandi')});
+
+/* ---------- Xatboshi oynasi ---------- */
+function paraDlg(){restoreSel();const bs=blocks();if(!bs.length){toast('Kursorni xatboshiga qoʻying');return}const cs=getComputedStyle(bs[0]),cm=v=>+(parseFloat(v)/MM/10).toFixed(2);
+ $('#paAl').value=/^(center|right|justify)$/.test(cs.textAlign)?cs.textAlign:'left';$('#paL').value=cm(cs.marginLeft);$('#paR').value=cm(cs.marginRight);
+ const ti=parseFloat(cs.textIndent)||0;$('#paSp').value=ti>0.5?'first':ti<-0.5?'hang':'';$('#paSv').value=Math.abs(cm(cs.textIndent))||1.25;
+ $('#paB').value=Math.round(parseFloat(cs.marginTop)*.75);$('#paA').value=Math.round(parseFloat(cs.marginBottom)*.75);
+ const fs=parseFloat(cs.fontSize),lh=cs.lineHeight==='normal'?1.15:+(parseFloat(cs.lineHeight)/fs).toFixed(2);$('#paLs').value=['1','1.15','1.5','2'].includes(String(lh))?String(lh):'x';$('#paLv').value=lh;
+ $('#paWid').checked=+cs.orphans>=2;$('#paKn').checked=cs.breakAfter==='avoid';$('#paKl').checked=cs.breakInside==='avoid';$('#paPb').checked=cs.breakBefore==='page';$('#paDlg').classList.add('show')}
+$('#paLs').addEventListener('change',()=>{if($('#paLs').value!=='x')$('#paLv').value=$('#paLs').value});
+$('#paDlg').addEventListener('click',e=>{const a=e.target.closest('[data-pa]')?.dataset.pa;if(e.target.id==='paDlg'||a==='x'){$('#paDlg').classList.remove('show');return}if(a!=='ok')return;
+ const v=id=>parseFloat($('#'+id).value)||0,sp=$('#paSp').value,sv=v('paSv'),L=v('paL'),lh=$('#paLs').value==='x'?v('paLv'):+$('#paLs').value;
+ blocks().forEach(b=>{const s=b.style;s.textAlign=$('#paAl').value==='left'?'':$('#paAl').value;s.marginLeft=L?L+'cm':'';s.marginRight=v('paR')?v('paR')+'cm':'';
+  s.textIndent=sp==='first'?sv+'cm':sp==='hang'?(-sv)+'cm':'';if(sp==='hang'&&L<sv)s.marginLeft=sv+'cm';
+  s.marginTop=v('paB')+'pt';s.marginBottom=v('paA')+'pt';s.lineHeight=lh&&lh!==1.15?String(lh):'';
+  s.orphans=s.widows=$('#paWid').checked?'2':'1';s.breakAfter=$('#paKn').checked?'avoid':'';s.breakInside=$('#paKl').checked?'avoid':'';s.breakBefore=$('#paPb').checked?'page':''});
+ $('#paDlg').classList.remove('show');changed();updateUI()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('#psDlg,#paDlg').forEach(d=>d.classList.remove('show'));
+ if(e.ctrlKey&&e.key==='Enter'&&!e.altKey&&document.activeElement===doc){e.preventDefault();e.shiftKey?CMD.colBreak():CMD.pageBreak()}});
+
 /* ---------- buyruqlar ---------- */
 const CMD={
  paste:()=>pasteFromClipboard(PM),pasteKeep:()=>pasteFromClipboard('keep'),pasteMerge:()=>pasteFromClipboard('merge'),pasteText:()=>pasteFromClipboard('text'),
@@ -1494,6 +1598,8 @@ const CMD={
  tcToggle:()=>{st.tc=!st.tc;tcUI();store();toast(st.tc?'Oʻzgarishlarni kuzatish yoqildi — har bir tahrir belgilanadi':'Kuzatish oʻchirildi')},
  tcPrev:()=>tcStep(-1),tcNext:()=>tcStep(1),tcAccept:()=>tcOne(true),tcReject:()=>tcOne(false),tcAcceptAll:()=>tcAll(true),tcRejectAll:()=>tcAll(false),tcAcceptAllOff:()=>{tcAll(true);st.tc=false;tcUI();store()},
  protect:()=>protect(),
+ pageSetup:()=>pageSetup(),paraDlg:()=>paraDlg(),colBreak:()=>insertHTML('<div class="cb" contenteditable="false"></div><p><br></p>'),wrapBreak:()=>insertHTML('<br style="clear:both">'),
+ colLine:()=>{st.colLine=!st.colLine;applyPage();store();if(st.cols<2)toast('Chiziq ustunlar 2 yoki 3 boʻlganda koʻrinadi')},
  cut:()=>ex('cut'),copy:()=>{restoreSel();document.execCommand('copy');toast('Nusxa olindi')},
  painter:()=>{if(painterFmt){painterFmt=null;$('#painter').classList.remove('on');doc.style.cursor='';return}restoreSel();painterFmt=grabFmt();$('#painter').classList.add('on');doc.style.cursor='copy';toast('Format olindi — endi matnni belgilang')},
  grow:()=>stepSize(1),shrink:()=>stepSize(-1),
@@ -1586,6 +1692,7 @@ document.addEventListener('click',e=>{const t=e.target;if(t.closest('.pop')){con
   else if(d.sz){st.size=d.sz;applyPage();store()}
   else if(d.sym){insertHTML(d.sym.replace(/</g,'&lt;'))}
   else if(d.x&&/^tr:/.test(d.x))translateTo(d.x.slice(3));
+  else if(d.x&&/^(ln|wrap|rot):/.test(d.x)){const[k,v]=d.x.split(':');if(k==='ln'){st.ln=v;applyPage();store()}else if(k==='wrap')imgWrap(v);else imgRotate(v)}
   else if(d.x&&/^(bul|num|sort|shade|bd|fx|dl|pdef):/.test(d.x)){const i=d.x.indexOf(':'),k=d.x.slice(0,i),v=d.x.slice(i+1);
    if(k==='bul')setBullet(v);else if(k==='num')setNumber(v);else if(k==='sort')sortBlocks(v);else if(k==='shade')shadeBlocks(v);else if(k==='bd')borderBlocks(v);else if(k==='fx')textFx(v);
    else if(k==='dl'){DL=v;try{localStorage.setItem('hujjatDictLang',v)}catch(_){}dictUI();if(recOn){recOn=false;try{rec.stop()}catch(_){}setTimeout(dictate,300)}}
@@ -1597,7 +1704,7 @@ document.addEventListener('click',e=>{const t=e.target;if(t.closest('.pop')){con
 $('#fColor').oninput=e=>{lastFore=e.target.value;$('#colBar').style.background=lastFore;ex('foreColor',lastFore)};
 $('#fImg').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)insertImageFile(f)};
 $('#fOpen').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)openFile(f)};
-[['indL',v=>b=>b.style.marginLeft=v?v+'cm':''],['indF',v=>b=>b.style.textIndent=v?v+'cm':''],['spB',v=>b=>b.style.marginTop=v+'pt'],['spA',v=>b=>b.style.marginBottom=v+'pt']].forEach(([id,f])=>$('#'+id).addEventListener('change',e=>{const v=parseFloat(e.target.value)||0;blocks().forEach(f(v));changed()}));
+[['indL',v=>b=>b.style.marginLeft=v?v+'cm':''],['indR',v=>b=>b.style.marginRight=v?v+'cm':''],['indF',v=>b=>b.style.textIndent=v?v+'cm':''],['spB',v=>b=>b.style.marginTop=v+'pt'],['spA',v=>b=>b.style.marginBottom=v+'pt']].forEach(([id,f])=>$('#'+id).addEventListener('change',e=>{const v=parseFloat(e.target.value)||0;blocks().forEach(f(v));changed()}));
 
 /* tablar */
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.t==='file'){openBack();return}
