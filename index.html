@@ -210,7 +210,7 @@ body.dark .more a,body.dark #back a{color:#9cc1ff}
  #doc{min-height:0!important}
  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  #sheet{background:transparent!important}.wmk,.pbd,.hfx,#navPane{display:none!important}body.navon #work{padding-left:0}
- #cmPane,#lockBar,#dictBar,.lnum{display:none!important}#doc .cb{border:0;margin:0}#doc .cb::after{display:none}body.cmon #work{padding-right:0}#doc span.cmt{background:none!important;border:0!important}
+ #cmPane,#lockBar,#dictBar,.lnum,#ruler,#irBar,.irmask,#rdBar{display:none!important}body.gridon #sheet{background-image:none!important}#doc .cb{border:0;margin:0}#doc .cb::after{display:none}body.cmon #work{padding-right:0}#doc span.cmt{background:none!important;border:0!important}
  #wmPrint.on{display:block!important;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-45deg);z-index:0}
  #doc.marks :is(p,h1,h2,h3,h4,h5,h6,li,blockquote)::after,#doc.marks .pb::before{content:none!important}
  .pcopy{display:block!important;break-before:page;font-family:"Times New Roman",serif;font-size:14pt;line-height:1.15;overflow-wrap:anywhere}
@@ -414,6 +414,35 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
 .chtypes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}.chtypes button{border:1px solid var(--bd);background:var(--rb2);color:var(--tx);border-radius:4px;padding:5px 9px;cursor:pointer;font:inherit;font-size:12px}.chtypes button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 #chData{width:100%;box-sizing:border-box;font:13px Consolas,monospace;padding:6px;border:1px solid var(--bd);border-radius:4px}
 @media (max-width:700px){.chwrap{grid-template-columns:1fr}}
+
+/* --- Ko'rinish: chizg'ich, to'r, o'qish rejimlari --- */
+#ruler{position:sticky;top:0;z-index:6;height:22px;margin:0 auto 6px;display:none;user-select:none}
+body.ruleron #ruler{display:block}body.mob #ruler{display:none!important}
+#rulerCv{display:block;width:100%;height:22px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.rm{position:absolute;width:0;height:0;cursor:ew-resize;margin-left:-6px;border-left:6px solid transparent;border-right:6px solid transparent}
+.rm-f{top:0;border-top:8px solid #555}.rm-l{bottom:0;border-bottom:8px solid #555}.rm-r{bottom:0;border-bottom:8px solid #555}
+.rm:hover{filter:drop-shadow(0 0 2px #2b579a)}
+body.gridon #sheet{background-image:linear-gradient(rgba(91,155,213,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(91,155,213,.18) 1px,transparent 1px);background-size:5mm 5mm}
+.chkb{display:flex;align-items:center;gap:6px;font-size:var(--rf);padding:3px 6px;cursor:pointer;white-space:nowrap}
+body.readm #title,body.readm #tabs,body.readm #ribbon,body.readm #status,body.readm #ruler{display:none!important}
+body.readm #sheet{box-shadow:0 2px 20px rgba(0,0,0,.12)}body.readm .mark span{display:none}
+#rdBar{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:50;display:none;align-items:center;gap:8px;background:var(--rb2);border:1px solid var(--bd);border-radius:20px;padding:5px 8px 5px 16px;box-shadow:0 4px 16px rgba(0,0,0,.15);font-size:var(--rf)}
+body.readm #rdBar{display:flex}#rdBar button{border:1px solid var(--bd);background:var(--rb2);color:var(--tx);border-radius:14px;padding:4px 12px;cursor:pointer;font:inherit}
+body.irm{--irbg:#fff;--irtx:#111}body.irm.ir-sepia{--irbg:#f4ecd8;--irtx:#3b2f1e}body.irm.ir-dark{--irbg:#1e1e1e;--irtx:#eaeaea}
+body.irm #title,body.irm #tabs,body.irm #ribbon,body.irm #status,body.irm #ruler,body.irm #navPane,body.irm #cmPane,body.irm .mark,body.irm .pnum,body.irm .wmk,body.irm .pbd,body.irm .hfx,body.irm .lnum{display:none!important}
+body.irm #work{background:var(--irbg);padding:70px 16px 50vh!important}
+body.irm #sheetWrap{width:100%!important;zoom:1!important}
+body.irm #sheet{width:auto!important;max-width:min(40em,100%);padding:0!important;box-shadow:none;background:var(--irbg)!important;margin:0 auto;min-height:0}
+body.irm #doc{font-family:var(--irf,Calibri,'Segoe UI',sans-serif)!important;font-size:var(--irs,26px)!important;line-height:1.75!important;color:var(--irtx)!important;min-height:0!important;column-count:auto!important}
+body.irm #doc *{font-family:inherit!important;font-size:inherit!important;line-height:inherit!important;color:inherit!important;background:transparent!important;-webkit-text-stroke:0!important;text-shadow:none!important}
+body.irm #doc h1,body.irm #doc h2,body.irm #doc h3{font-weight:700!important;margin:.8em 0 .3em}
+body.irm.ir-space #doc{letter-spacing:.12em;word-spacing:.3em}
+#irBar{position:fixed;top:0;left:0;right:0;z-index:55;display:none;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 16px;background:var(--rb2);border-bottom:1px solid var(--bd);box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:var(--rf)}
+body.irm #irBar{display:flex}.irg{display:flex;align-items:center;gap:6px}
+#irBar button{border:1px solid var(--bd);background:var(--rb2);color:var(--tx);border-radius:16px;padding:5px 14px;cursor:pointer;font:inherit}
+#irBar .irx{margin-left:auto}#irBar .irt{width:22px;height:22px;padding:0;border-radius:50%}#irBar select{font:inherit;padding:3px 6px;border:1px solid var(--bd);border-radius:4px}
+.irmask{position:fixed;left:0;right:0;background:rgba(0,0,0,.62);z-index:52;pointer-events:none;display:none}body.irfocus .irmask{display:block}#irMaskT{top:0}#irMaskB{bottom:0}
+body.irm #ttsBar{top:64px}
 #symDlg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:70;display:none;align-items:flex-start;justify-content:center;padding-top:6vh}
 #symDlg.show{display:flex}
 #symDlg label{display:flex;align-items:center;gap:6px;font-size:var(--rf)}
@@ -666,25 +695,37 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
   <!-- KO'RINISH -->
   <div class="panel" data-p="view">
    <div class="grp"><div class="gb">
-     <button class="b big" data-c="zoomIn"><i data-i="zoomin"></i>Kattalashtirish</button>
+     <button class="b big" data-c="readMode" title="Faqat oʻqish uchun — chiqish: Esc"><i data-i="readm"></i>Oʻqish rejimi</button>
+     <button class="b big" data-c="printLayout" id="prlBtn"><i data-i="printl"></i>Chop etish maketi</button>
+     <button class="b big" data-c="mobile" id="mobBtn" title="Matn oyna eniga moslashadi (sahifalarsiz)"><i data-i="webl"></i>Veb-maket</button>
+    </div><div class="gl">Koʻrinishlar</div></div>
+   <div class="grp"><div class="gb">
+     <button class="b big" data-c="focus" id="focusBtn" title="Faqat varaq qoladi (chiqish: Esc)"><i data-i="focus"></i>Fokus rejimi</button>
+     <button class="b big" data-c="immersive" title="Oʻqishni osonlashtiradi: katta harf, keng oraliq, qator fokusi, ovoz"><i data-i="immersive"></i>Immersiv oʻquvchi</button>
+    </div><div class="gl">Immersiv</div></div>
+   <div class="grp"><div class="gb"><div class="col">
+     <label class="chkb"><input type="checkbox" id="rulerChk"> Chizgʻich</label>
+     <label class="chkb"><input type="checkbox" id="gridChk"> Toʻr chiziqlari</label>
+     <label class="chkb"><input type="checkbox" id="navChk"> Navigatsiya paneli</label>
+    </div></div><div class="gl">Koʻrsatish</div></div>
+   <div class="grp"><div class="gb">
+     <button class="b big" data-pop="zoomPop"><i data-i="zoomdlg"></i>Masshtab</button>
      <button class="b big" data-c="zoom100"><span class="ltr" style="font-size:16px;height:32px;line-height:32px">100%</span>100%</button>
+     <button class="b big" data-c="zoomPage"><i data-i="onepage"></i>Bir sahifa</button>
      <button class="b big" data-c="zoomFit"><i data-i="fitw"></i>Sahifa kengligi</button>
-     <button class="b big" data-c="zoomOut"><i data-i="zoomout"></i>Kichraytirish</button>
     </div><div class="gl">Masshtab</div></div>
    <div class="grp"><div class="gb">
-     <button class="b big" data-c="nav" id="navBtn"><i data-i="navpane"></i>Navigatsiya paneli</button>
-     <button class="b big" data-c="focus" id="focusBtn" title="Faqat varaq qoladi (chiqish: Esc)"><i data-i="focus"></i>Fokus rejimi</button>
-     <button class="b big" data-c="full"><i data-i="full"></i>To'liq ekran</button>
-     <button class="b big" data-c="dark" id="darkBtn"><i data-i="moon"></i>Qorong'i rejim</button>
-     <button class="b big" data-c="mobile" id="mobBtn"><i data-i="phone"></i>Mobil ko'rinish</button>
+     <button class="b big" data-c="full"><i data-i="full"></i>Toʻliq ekran</button>
+     <button class="b big" data-c="dark" id="darkBtn"><i data-i="moon"></i>Qorongʻi rejim</button>
+     <button class="b big" data-c="nav" id="navBtn" style="display:none"><i data-i="navpane"></i>Navigatsiya</button>
     </div><div class="gl">Oyna</div></div>
   </div>
  </div>
- <div id="work"><div id="sheetWrap"><div id="sheet"><div id="doc" contenteditable="true" spellcheck="true"></div></div></div></div>
+ <div id="work"><div id="sheetWrap"><div id="ruler"><canvas id="rulerCv" height="22"></canvas><i class="rm rm-f" data-rm="f" title="Birinchi qator chekinishi"></i><i class="rm rm-l" data-rm="l" title="Chap chekinish"></i><i class="rm rm-r" data-rm="r" title="Oʻng chekinish"></i></div><div id="sheet"><div id="doc" contenteditable="true" spellcheck="true"></div></div></div></div>
  <div id="status">
   <span id="stPage">1-sahifa, jami 1</span><span id="stWords">0 ta so'z</span><span>O'zbek</span>
   <span class="sp"></span>
-  <button id="zOut" title="Kichraytirish">−</button><input type="range" id="zRange" min="30" max="300" value="100"><button id="zIn" title="Kattalashtirish">+</button><span id="zLbl" style="width:40px">100%</span>
+  <button id="zOut" title="Kichraytirish">−</button><input type="range" id="zRange" min="30" max="300" value="100"><button id="zIn" title="Kattalashtirish">+</button><span id="zLbl" style="width:40px;cursor:pointer" title="Masshtab" data-pop="zoomPop">100%</span>
  </div>
 </div>
 
@@ -744,6 +785,17 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
   <label class="chk"><input type="checkbox" id="paKl"> Xatboshini boʻlmaslik</label><label class="chk"><input type="checkbox" id="paPb"> Yangi sahifadan boshlash</label></div>
  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn" data-pa="x">Bekor qilish</button><button class="btn pri" data-pa="ok">OK</button></div>
 </div></div>
+<div class="pop" id="zoomPop"><button class="it" data-x="zm:200">200%</button><button class="it" data-x="zm:150">150%</button><button class="it" data-x="zm:125">125%</button><button class="it" data-x="zm:100">100%</button><button class="it" data-x="zm:75">75%</button><button class="it" data-x="zm:50">50%</button>
+ <div class="psep"></div><button class="it" data-x="zoomFit">Sahifa kengligi</button><button class="it" data-x="zoomPage">Bir sahifa</button><button class="it" data-x="zm:ask">Boshqa…</button></div>
+<div id="irBar"><button data-ir="play" title="Ovoz chiqarib oʻqish">▶ Oʻqish</button>
+ <span class="irg">Hajm <input type="range" id="irSize" min="16" max="44" step="2"></span>
+ <span class="irg">Shrift <select id="irFont"><option value="Calibri,'Segoe UI',sans-serif">Calibri</option><option value="Verdana,sans-serif">Verdana</option><option value="'Times New Roman',serif">Times</option><option value="'Comic Sans MS','Segoe Print',cursive">Comic Sans</option></select></span>
+ <label class="irg"><input type="checkbox" id="irSpace"> Keng oraliq</label>
+ <span class="irg">Fon <button data-irt="light" class="irt" style="background:#fff"></button><button data-irt="sepia" class="irt" style="background:#f4ecd8"></button><button data-irt="dark" class="irt" style="background:#1e1e1e"></button></span>
+ <span class="irg">Qator fokusi <select id="irFocus"><option value="0">Yoʻq</option><option value="1">1 qator</option><option value="3">3 qator</option><option value="5">5 qator</option></select></span>
+ <button data-ir="x" class="irx">✕ Chiqish</button></div>
+<div id="irMaskT" class="irmask"></div><div id="irMaskB" class="irmask"></div>
+<div id="rdBar"><span>Oʻqish rejimi</span><button data-rd="up" title="Oldingi ekran (PageUp)">‹</button><button data-rd="down" title="Keyingi ekran (PageDown)">›</button><button data-rd="x">Tahrirlash</button></div>
 <div class="pop" id="casePop">
  <button class="it" data-x="caseSent">Gap boshi katta harf</button><button class="it" data-x="caseLow">kichik harflar</button><button class="it" data-x="caseUp">KATTA HARFLAR</button><button class="it" data-x="caseCap">Har So'z Bosh Harf Bilan</button>
 </div>
@@ -896,7 +948,7 @@ body.locked #lockBar{display:flex}#lockBar button{border:1px solid #d9b85c;backg
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const doc=$('#doc'),sheet=$('#sheet'),work=$('#work');
-const I={chart:'M4 20h16M7 16v-5M12 16V7M17 16v-8',icons:'M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z',qr:'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2zM6.5 6.5h1v1h-1zM16.5 6.5h1v1h-1zM6.5 16.5h1v1h-1z',tbox:'M4 5h16v14H4zM8 9h8M8 12h8M8 15h5',wordart:'M4 19l5-14h2l5 14M6 14h8M17 8c2 0 3 1 3 2.5S19 13 17 13',sign:'M3 17c3-1 4-6 6-6s0 6 2 6 3-4 4-4 1 3 3 3M3 21h18',bookmark:'M7 3h10v18l-5-4-5 4z',merge:'M3 5h18v14H3zM12 5v4M12 15v4M8 12h8M14 10l2 2-2 2M10 10l-2 2 2 2',tstyle:'M3 4h18v16H3zM3 9h18M3 14h18M9 9v11M15 9v11',breaks:'M6 3h12v6H6zM6 15h12v6H6zM3 12h3M9 12h2M13 12h2M18 12h3',lnum:'M4 6h1M4 12h1M4 18h1M8 6h12M8 12h12M8 18h9',launch:'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',wrap:'M4 5h16M4 19h16M4 9h7M4 13h7M14 9h6v6h-6z',rotate:'M20 12a8 8 0 11-3-6.2M20 4v5h-5',cmt:'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',cmtdel:'M4 5h16v11H9l-5 4zM9 8l6 6M15 8l-6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',cmtshow:'M4 5h16v11H9l-5 4zM12 8v.01M12 11v3',track:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4M14 20h6',accept:'M5 12l5 5 9-10',reject:'M6 6l12 12M18 6L6 18',markup:'M4 6h16M4 12h10M4 18h7M17 14l3 3-3 3',translate:'M4 5h9M8.5 3v2M6 5c0 4 3 7 6 8M11 5c-1 4-4 7-7 8M13 21l4-9 4 9M14.5 18h5',lock:'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',mlist:'M4 6h1M8 6h12M6 12h1M10 12h10M8 18h1M12 18h8',sort:'M4 6h7M4 12h5M4 18h3M17 4v16M14 17l3 3 3-3',shade:'M4 20l8-16 8 16zM8 13h8',bordb:'M4 4h16v16H4zM4 20h16',fx:'M5 19l6-14 6 14M7.5 14h7M18 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1z',mic:'M12 3a3 3 0 013 3v6a3 3 0 01-6 0V6a3 3 0 013-3zM5 11a7 7 0 0014 0M12 18v3',cover:'M5 3h14v18H5zM8 7h8M8 10h8M9 15h6M10 18h4',blank:'M6 3h9l4 4v14H6zM15 3v4h4',header:'M4 3h16v18H4zM4 8h16M8 5.5h8',footer:'M4 3h16v18H4zM4 16h16M8 18.5h8',dropcap:'M4 5h6v8H4zM13 6h7M13 10h7M4 16h16M4 20h16',watermark:'M5 3h14v18H5zM8 16l8-8M9 9.5l1.5-1.5M14.5 15l1.5-1.5',pagecolor:'M5 3h14v18H5zM12 9c2 3 3 4.5 3 6a3 3 0 01-6 0c0-1.5 1-3 3-6z',pageborder:'M3 3h18v18H3zM6 6h12v12H6z',toc:'M4 5h10M4 9h13M7 13h10M7 17h13M17 5h3M19 9h1',footnote:'M4 6h12M4 10h12M4 14h8M17 4v5M15.5 5.2L17 4M4 19h5M11 19h1',navpane:'M3 4h18v16H3zM9 4v16M5 8h2M5 11h2M5 14h2',focus:'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5M9 12h6',pilcrow:'M13 4v16M17 4v16M19 4H10a4 4 0 000 8h3',tplay:'M8 5l11 7-11 7z',tpause:'M8 5v14M16 5v14',tprev:'M6 5v14M18 5L9 12l9 7z',tnext:'M18 5v14M6 5l9 7-9 7z',tgear:'M12 9a3 3 0 100 6 3 3 0 000-6zM12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1',tclose:'M6 6l12 12M18 6L6 18',paste:'M9 4h6v3H9zM7 5H5v16h14V5h-2',cut:'M4 7a2 2 0 104 0a2 2 0 10-4 0M4 17a2 2 0 104 0a2 2 0 10-4 0M7.5 8.5L20 18M7.5 15.5L20 6',copy:'M8 8h12v12H8zM16 8V4H4v12h4',
+const I={readm:'M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1zM12 6v14',printl:'M6 3h12v18H6zM9 7h6M9 11h6M9 15h4',webl:'M12 21a9 9 0 100-18 9 9 0 000 18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18',immersive:'M4 5h7v14H4zM13 5h7v14h-7zM6 9h3M6 12h3M15 9h3M15 12h3',ruler:'M3 8h18v8H3zM7 8v3M11 8v4M15 8v3M19 8v4',grid:'M4 4h16v16H4zM4 9h16M4 14h16M9 4v16M14 4v16',onepage:'M7 3h10v18H7zM4 12h2M18 12h2',zoomdlg:'M10 10m-6 0a6 6 0 1012 0a6 6 0 10-12 0M15 15l5 5M8 10h4',chart:'M4 20h16M7 16v-5M12 16V7M17 16v-8',icons:'M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z',qr:'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2zM6.5 6.5h1v1h-1zM16.5 6.5h1v1h-1zM6.5 16.5h1v1h-1z',tbox:'M4 5h16v14H4zM8 9h8M8 12h8M8 15h5',wordart:'M4 19l5-14h2l5 14M6 14h8M17 8c2 0 3 1 3 2.5S19 13 17 13',sign:'M3 17c3-1 4-6 6-6s0 6 2 6 3-4 4-4 1 3 3 3M3 21h18',bookmark:'M7 3h10v18l-5-4-5 4z',merge:'M3 5h18v14H3zM12 5v4M12 15v4M8 12h8M14 10l2 2-2 2M10 10l-2 2 2 2',tstyle:'M3 4h18v16H3zM3 9h18M3 14h18M9 9v11M15 9v11',breaks:'M6 3h12v6H6zM6 15h12v6H6zM3 12h3M9 12h2M13 12h2M18 12h3',lnum:'M4 6h1M4 12h1M4 18h1M8 6h12M8 12h12M8 18h9',launch:'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',wrap:'M4 5h16M4 19h16M4 9h7M4 13h7M14 9h6v6h-6z',rotate:'M20 12a8 8 0 11-3-6.2M20 4v5h-5',cmt:'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',cmtdel:'M4 5h16v11H9l-5 4zM9 8l6 6M15 8l-6 6',prev:'M15 6l-6 6 6 6',next:'M9 6l6 6-6 6',cmtshow:'M4 5h16v11H9l-5 4zM12 8v.01M12 11v3',track:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4M14 20h6',accept:'M5 12l5 5 9-10',reject:'M6 6l12 12M18 6L6 18',markup:'M4 6h16M4 12h10M4 18h7M17 14l3 3-3 3',translate:'M4 5h9M8.5 3v2M6 5c0 4 3 7 6 8M11 5c-1 4-4 7-7 8M13 21l4-9 4 9M14.5 18h5',lock:'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',mlist:'M4 6h1M8 6h12M6 12h1M10 12h10M8 18h1M12 18h8',sort:'M4 6h7M4 12h5M4 18h3M17 4v16M14 17l3 3 3-3',shade:'M4 20l8-16 8 16zM8 13h8',bordb:'M4 4h16v16H4zM4 20h16',fx:'M5 19l6-14 6 14M7.5 14h7M18 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1z',mic:'M12 3a3 3 0 013 3v6a3 3 0 01-6 0V6a3 3 0 013-3zM5 11a7 7 0 0014 0M12 18v3',cover:'M5 3h14v18H5zM8 7h8M8 10h8M9 15h6M10 18h4',blank:'M6 3h9l4 4v14H6zM15 3v4h4',header:'M4 3h16v18H4zM4 8h16M8 5.5h8',footer:'M4 3h16v18H4zM4 16h16M8 18.5h8',dropcap:'M4 5h6v8H4zM13 6h7M13 10h7M4 16h16M4 20h16',watermark:'M5 3h14v18H5zM8 16l8-8M9 9.5l1.5-1.5M14.5 15l1.5-1.5',pagecolor:'M5 3h14v18H5zM12 9c2 3 3 4.5 3 6a3 3 0 01-6 0c0-1.5 1-3 3-6z',pageborder:'M3 3h18v18H3zM6 6h12v12H6z',toc:'M4 5h10M4 9h13M7 13h10M7 17h13M17 5h3M19 9h1',footnote:'M4 6h12M4 10h12M4 14h8M17 4v5M15.5 5.2L17 4M4 19h5M11 19h1',navpane:'M3 4h18v16H3zM9 4v16M5 8h2M5 11h2M5 14h2',focus:'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5M9 12h6',pilcrow:'M13 4v16M17 4v16M19 4H10a4 4 0 000 8h3',tplay:'M8 5l11 7-11 7z',tpause:'M8 5v14M16 5v14',tprev:'M6 5v14M18 5L9 12l9 7z',tnext:'M18 5v14M6 5l9 7-9 7z',tgear:'M12 9a3 3 0 100 6 3 3 0 000-6zM12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1',tclose:'M6 6l12 12M18 6L6 18',paste:'M9 4h6v3H9zM7 5H5v16h14V5h-2',cut:'M4 7a2 2 0 104 0a2 2 0 10-4 0M4 17a2 2 0 104 0a2 2 0 10-4 0M7.5 8.5L20 18M7.5 15.5L20 6',copy:'M8 8h12v12H8zM16 8V4H4v12h4',
  brush:'M4 4h12v5H4zM16 6h3v6h-8v3M10 15h2v6h-2z',clear:'M8 20h12M4 16l9-9 6 6-7 7H8z',marker:'M8 12l7-7 4 4-7 7zM8 12l-1 4 1 1 4-1',
  bullets:'M10 6h10M10 12h10M10 18h10M4 6a1 1 0 102 0a1 1 0 10-2 0M4 12a1 1 0 102 0a1 1 0 10-2 0M4 18a1 1 0 102 0a1 1 0 10-2 0',numbers:'M10 6h10M10 12h10M10 18h10M4 4h1.5v4M4 8h3M4 14.5c0-1.5 3-1.5 3 0S4 17 4 18.5h3',
  outdent:'M10 6h10M10 12h10M10 18h10M4 6h3M7 9l-3 3 3 3',indent:'M10 6h10M10 12h10M10 18h10M4 9l3 3-3 3',firstline:'M10 5h10M4 10h16M4 15h16M4 20h16M4 3v4',
@@ -993,7 +1045,7 @@ function pageCss(){const[w,h]=pageDims(),[t,r,b,l]=st.m,bw=PBW[st.pbd],pad=bw?4:
  return `@page{size:${w}mm ${h}mm;margin:${t-pad}mm ${r-pad}mm ${b-pad}mm ${l-pad}mm;${bw?`border:${bw} #1f3864;padding:${pad}mm;`:''}${st.pc?`background:${st.pc};`:''}`+
   (st.hdr?`@top-center{content:${cssStr(st.hdr)};${f}}`:'')+(st.ftr?`@bottom-${st.pn?'left':'center'}{content:${cssStr(st.ftr)};${f}}`:'')+
   (st.pn?'@bottom-center{content:counter(page);font:11pt "Times New Roman",serif}':'')+'}'}
-function applyPage(){const[w,h]=pageDims(),[t,r,b,l]=st.m;const mob=isMob();if(typeof revUI==='function')revUI();
+function applyPage(){const[w,h]=pageDims(),[t,r,b,l]=st.m;const mob=isMob();if(typeof revUI==='function')revUI();if(typeof viewUI==='function')requestAnimationFrame(viewUI);
  $('#sheetWrap').style.width=mob?'100%':'';
  if(mob){sheet.style.width='100%';sheet.style.padding='14px 16px 56px'}else{sheet.style.width=w+'mm';sheet.style.padding=`${t}mm ${r}mm ${b}mm ${l}mm`}
  $('#mobBtn').classList.toggle('on',mob);
@@ -1032,6 +1084,7 @@ function setZoom(z){st.zoomAuto=false;st.zoom=Math.max(30,Math.min(300,Math.roun
 /* varaq ekranga sig'masa, kengligiga moslab kichraytiradi; foydalanuvchi o'zi o'zgartirsa, uning tanlovi saqlanadi */
 function autoZoom(){if(isMob()){showZoom(100);return}
  if(st.zoomAuto===false){showZoom(st.zoom);return}
+ if(st.zoomAuto==='page'){const[pw,ph]=pageDims(),pad=parseFloat(getComputedStyle(work).paddingTop)||0;showZoom(Math.max(30,Math.min(300,Math.floor(Math.min((work.clientWidth-40)/(pw*MM),(work.clientHeight-pad*2-(RULER?28:0))/(ph*MM))*100))));return}
  const[w]=pageDims();const pad=parseFloat(getComputedStyle(work).paddingLeft)||0;const fit=Math.floor((work.clientWidth-2*pad-4)/(w*MM)*100);let z=st.zoomAuto==='fit'?fit:Math.min(100,fit);
  if(st.zoomAuto===true&&innerWidth>=1800){const[,ph]=pageDims();const hfit=Math.floor((work.clientHeight-2*pad-4)/(ph*MM)*100);z=Math.max(100,Math.min(fit,hfit,300))} /* katta ekran/doska: butun varaq ko'rinadigan qilib kattalashtiriladi */
  showZoom(Math.max(30,Math.min(300,z)))}
@@ -1047,7 +1100,7 @@ function updateUI(){
  const pt=Math.round(parseFloat(cs.fontSize)*.75*2)/2;const ss=$('#sizeSel');if(![...ss.options].some(o=>+o.value===pt))ss.add(new Option(pt,pt));ss.value=pt;
  const blk=e.closest('h1,h2,h3,h4,blockquote,pre,p,li');const tag=blk&&doc.contains(blk)?blk.tagName.toLowerCase():'p';$$('.sty').forEach(s=>s.classList.toggle('on',s.dataset.tag===tag));
  const bl=blocks()[0];if(bl){const bs=getComputedStyle(bl);$('#indL').value=(parseFloat(bs.marginLeft)/MM/10).toFixed(2)*1;$('#indR').value=(parseFloat(bs.marginRight)/MM/10).toFixed(2)*1;$('#indF').value=(parseFloat(bs.textIndent)/MM/10).toFixed(2)*1;$('#spB').value=Math.round(parseFloat(bs.marginTop)*.75);$('#spA').value=Math.round(parseFloat(bs.marginBottom)*.75)}
- updateStatus()}
+ updateStatus();if(typeof rulerMarks==='function')rulerMarks()}
 
 /* ---------- saqlash ---------- */
 let stT,fsT,savedState=true;
@@ -1754,6 +1807,48 @@ function bookmark(){restoreSel();const n=(prompt('Xatchoʻp nomi (harf va raqaml
  if(document.getElementById('bm-'+n)){toast('Bu nom band');return}insertHTML(`<a id="bm-${n}" class="bm" contenteditable="false"></a>`);toast('Xatchoʻp qoʻyildi: '+n+' — havolada #'+n+' deb yozing')}
 doc.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&(e.ctrlKey||e.metaKey)){e.preventDefault();const t=document.getElementById('bm-'+decodeURIComponent(a.getAttribute('href').slice(1)))||document.getElementById(a.getAttribute('href').slice(1));if(t)t.scrollIntoView({block:'center',behavior:'smooth'})}},true);
 
+/* ---------- Ko'rinish: chizg'ich (Word'dagidek chekinish belgilari bilan) ---------- */
+let RULER=false,GRID=false;try{RULER=localStorage.getItem('hujjatRuler')==='1';GRID=localStorage.getItem('hujjatGrid')==='1'}catch(_){}
+function drawRuler(){const cv=$('#rulerCv');if(!RULER||isMob())return;const[w]=pageDims(),[,r,,l]=st.m,W=w*MM;$('#ruler').style.width=W+'px';
+ const dpr=2;cv.width=W*dpr;cv.height=22*dpr;const g=cv.getContext('2d');g.scale(dpr,dpr);g.fillStyle='#d6d6d6';g.fillRect(0,0,W,22);g.fillStyle='#fff';g.fillRect(l*MM,0,(w-l-r)*MM,22);
+ g.fillStyle='#555';g.font='9px Segoe UI,sans-serif';g.textAlign='center';g.textBaseline='middle';
+ for(let mm=-Math.floor(l/2.5)*2.5;mm<=w-l;mm+=2.5){const x=(l+mm)*MM;if(x<0||x>W)continue;const k=Math.round(mm/2.5);
+  if(k%4===0){if(mm!==0)g.fillText(String(Math.abs(mm/10)),x,11)}else if(k%2===0){g.fillRect(x-.5,8,1,6)}else g.fillRect(x-.5,10,1,2)}
+ rulerMarks()}
+function rulerMarks(){if(!RULER||isMob())return;const[w]=pageDims(),[,r,,l]=st.m;const b=blocks()[0];const cs=b?getComputedStyle(b):null;
+ const ml=cs?parseFloat(cs.marginLeft)||0:0,ti=cs?parseFloat(cs.textIndent)||0:0,mr=cs?parseFloat(cs.marginRight)||0:0;
+ $('.rm-l').style.left=(l*MM+ml)+'px';$('.rm-f').style.left=(l*MM+ml+ti)+'px';$('.rm-r').style.left=((w-r)*MM-mr)+'px'}
+$('#ruler').addEventListener('pointerdown',e=>{const m=e.target.closest('[data-rm]');if(!m)return;e.preventDefault();m.setPointerCapture(e.pointerId);const k=m.dataset.rm;
+ const move=ev=>{const[w]=pageDims(),[,r,,l]=st.m,rr=$('#ruler').getBoundingClientRect(),z=curZoom();let x=(ev.clientX-rr.left)/z;const snap=.25*10*MM;
+  const bs=blocks();if(!bs.length)return;const cs=getComputedStyle(bs[0]),ml=parseFloat(cs.marginLeft)||0;
+  if(k==='l'){const v=Math.max(0,Math.round((x-l*MM)/snap)*snap);bs.forEach(b=>b.style.marginLeft=v?(v/MM/10).toFixed(2)+'cm':'')}
+  else if(k==='f'){const v=Math.round((x-l*MM-ml)/snap)*snap;bs.forEach(b=>b.style.textIndent=v?(v/MM/10).toFixed(2)+'cm':'')}
+  else{const v=Math.max(0,Math.round(((w-r)*MM-x)/snap)*snap);bs.forEach(b=>b.style.marginRight=v?(v/MM/10).toFixed(2)+'cm':'')}
+  rulerMarks()};
+ const up=()=>{m.removeEventListener('pointermove',move);m.removeEventListener('pointerup',up);changed();updateUI()};m.addEventListener('pointermove',move);m.addEventListener('pointerup',up)});
+function viewUI(){document.body.classList.toggle('ruleron',RULER);document.body.classList.toggle('gridon',GRID);$('#rulerChk').checked=RULER;$('#gridChk').checked=GRID;
+ $('#navChk').checked=$('#navPane').classList.contains('show');$('#prlBtn').classList.toggle('on',!isMob());document.body.classList.toggle('mob',isMob());if(RULER)drawRuler()}
+$('#rulerChk').addEventListener('change',e=>{RULER=e.target.checked;try{localStorage.setItem('hujjatRuler',RULER?'1':'0')}catch(_){}viewUI()});
+$('#gridChk').addEventListener('change',e=>{GRID=e.target.checked;try{localStorage.setItem('hujjatGrid',GRID?'1':'0')}catch(_){}viewUI()});
+$('#navChk').addEventListener('change',()=>{CMD.nav();viewUI()});
+document.addEventListener('selectionchange',()=>{if(RULER&&doc.contains(getSelection().anchorNode))requestAnimationFrame(rulerMarks)});
+
+/* ---------- O'qish rejimi ---------- */
+function readMode(on){document.body.classList.toggle('readm',on);doc.contentEditable=on?'false':(st.lock?'false':'true');if(on){st.zoomAutoPrev=st.zoomAuto;st.zoomAuto='page';autoZoom();toast('Oʻqish rejimi — sahifalash: PageUp/PageDown, chiqish: Esc')}else{st.zoomAuto=st.zoomAutoPrev??true;autoZoom()}}
+$('#rdBar').addEventListener('click',e=>{const a=e.target.closest('[data-rd]')?.dataset.rd;if(a==='x')readMode(false);else if(a)work.scrollBy({top:(a==='down'?1:-1)*work.clientHeight*.9,behavior:'smooth'})});
+
+/* ---------- Immersiv o'quvchi ---------- */
+let IR={s:26,f:"Calibri,'Segoe UI',sans-serif",sp:false,t:'light',fo:0};try{Object.assign(IR,JSON.parse(localStorage.getItem('hujjatIR')||'{}'))}catch(_){}
+function irApply(){const b=document.body;b.style.setProperty('--irs',IR.s+'px');b.style.setProperty('--irf',IR.f);b.classList.toggle('ir-space',IR.sp);b.classList.remove('ir-sepia','ir-dark');if(IR.t!=='light')b.classList.add('ir-'+IR.t);
+ b.classList.toggle('irfocus',+IR.fo>0);$('#irSize').value=IR.s;$('#irFont').value=IR.f;$('#irSpace').checked=IR.sp;$('#irFocus').value=IR.fo;irMask();try{localStorage.setItem('hujjatIR',JSON.stringify(IR))}catch(_){}}
+function irMask(){if(!+IR.fo)return;const lh=IR.s*1.75,band=lh*IR.fo,top=(innerHeight-band)/2;$('#irMaskT').style.height=top+'px';$('#irMaskB').style.height=(innerHeight-top-band)+'px'}
+function immersive(on){document.body.classList.toggle('irm',on);doc.contentEditable=on?'false':(st.lock?'false':'true');if(on){irApply();work.scrollTop=0}else{document.body.classList.remove('irfocus');if(TTS.on)ttsStop();applyPage();autoZoom()}}
+$('#irBar').addEventListener('input',e=>{if(e.target.id==='irSize')IR.s=+e.target.value;if(e.target.id==='irFont')IR.f=e.target.value;if(e.target.id==='irSpace')IR.sp=e.target.checked;if(e.target.id==='irFocus')IR.fo=+e.target.value;irApply()});
+$('#irBar').addEventListener('click',e=>{const t=e.target.closest('[data-irt]');if(t){IR.t=t.dataset.irt;irApply();return}const a=e.target.closest('[data-ir]')?.dataset.ir;if(a==='x')immersive(false);else if(a==='play'){if(!TTS.on)speak();else ttsToggle()}});
+addEventListener('resize',irMask);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.body.classList.contains('irm'))immersive(false);if(document.body.classList.contains('readm'))readMode(false)}
+ if(document.body.classList.contains('irm')&&+IR.fo&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();work.scrollBy({top:(e.key==='ArrowDown'?1:-1)*IR.s*1.75})}});
+
 /* ---------- buyruqlar ---------- */
 const CMD={
  paste:()=>pasteFromClipboard(PM),pasteKeep:()=>pasteFromClipboard('keep'),pasteMerge:()=>pasteFromClipboard('merge'),pasteText:()=>pasteFromClipboard('text'),
@@ -1763,6 +1858,8 @@ const CMD={
  tcPrev:()=>tcStep(-1),tcNext:()=>tcStep(1),tcAccept:()=>tcOne(true),tcReject:()=>tcOne(false),tcAcceptAll:()=>tcAll(true),tcRejectAll:()=>tcAll(false),tcAcceptAllOff:()=>{tcAll(true);st.tc=false;tcUI();store()},
  protect:()=>protect(),
  pageSetup:()=>pageSetup(),
+ readMode:()=>readMode(!document.body.classList.contains('readm')),immersive:()=>immersive(true),printLayout:()=>{if(isMob()){mobPref='off';try{localStorage.setItem('hujjatMob','off')}catch(_){}applyPage();autoZoom()}viewUI()},
+ zoomPage:()=>{st.zoomAuto='page';autoZoom();store()},
  tblAsk:()=>tblAsk(),txt2tbl:()=>txt2tbl(),cellMerge:()=>cellMerge(),chart:()=>openChart(),qr:()=>insertQR(),bookmark:()=>bookmark(),
  tbox:()=>insertBlock('<div class="tbox" style="float:right;width:45%"><p><b>Sarlavha</b></p><p>Matn maydoni — bu yerga yozing.</p></div>'),paraDlg:()=>paraDlg(),colBreak:()=>insertHTML('<div class="cb" contenteditable="false"></div><p><br></p>'),wrapBreak:()=>insertHTML('<br style="clear:both">'),
  colLine:()=>{st.colLine=!st.colLine;applyPage();store();if(st.cols<2)toast('Chiziq ustunlar 2 yoki 3 boʻlganda koʻrinadi')},
@@ -1804,7 +1901,7 @@ const CMD={
   alert(`Statistika\n\nSahifalar: ${pages}\nSo'zlar: ${w}\nBelgilar (bo'shliqsiz): ${cn}\nBelgilar (bo'shliq bilan): ${c}\nXatboshilar: ${p}`)},
  speak,latcyr:()=>transformSel(lat2cyr),cyrlat:()=>transformSel(cyr2lat),
  zoomIn:()=>setZoom(curZoom()*100+10),zoomOut:()=>setZoom(curZoom()*100-10),zoom100:()=>setZoom(100),
- mobile:()=>{mobPref=isMob()?'off':'on';try{localStorage.setItem('hujjatMob',mobPref)}catch(_){}applyPage();autoZoom();toast(isMob()?'Mobil ko\'rinish yoqildi':'Sahifa ko\'rinishi yoqildi')},
+ mobile:()=>{mobPref='on';try{localStorage.setItem('hujjatMob',mobPref)}catch(_){}applyPage();autoZoom();toast(isMob()?'Mobil ko\'rinish yoqildi':'Sahifa ko\'rinishi yoqildi')},
  zoomFit:()=>{st.zoomAuto='fit';autoZoom();store()},
  full:()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})},
  dark:()=>{st.dark=!st.dark;document.body.classList.toggle('dark',st.dark);$('#darkBtn').classList.toggle('on',st.dark);store()},
@@ -1847,6 +1944,7 @@ function closePops(){$$('.pop.show').forEach(p=>p.classList.remove('show'))}
 function openPop(id,anchor){const p=$('#'+id);const was=p.classList.contains('show');closePops();if(was)return;p.classList.add('show');const r=anchor.getBoundingClientRect();p.style.left=Math.max(6,Math.min(innerWidth-p.offsetWidth-6,r.left))+'px';p.style.top=(r.bottom+4)+'px'}
 // lenta tugmalari: belgilashni yo'qotmaslik uchun mousedown'ni to'xtatamiz
 ['#ribbon','#title','.pop','#status'].forEach(s=>$$(s).forEach(el=>el.addEventListener('mousedown',e=>{if(!e.target.closest('select,input'))e.preventDefault()})));
+$('#zLbl').addEventListener('click',e=>{e.stopPropagation();openPop('zoomPop',$('#zLbl'))});
 $('#ribbon').addEventListener('click',e=>{const b=e.target.closest('.b');if(!b)return;
  if(b.dataset.pop&&(!b.dataset.c||e.offsetY>b.offsetHeight-12||b.dataset.c==='fore'||b.dataset.c==='hilite')){openPop(b.dataset.pop,b);return}
  closePops();const c=b.dataset.c;if(c&&CMD[c])CMD[c]();updateUI()});
@@ -1858,6 +1956,7 @@ document.addEventListener('click',e=>{const t=e.target;if(t.closest('.pop')){con
   else if(d.sz){st.size=d.sz;applyPage();store()}
   else if(d.sym){insertHTML(d.sym.replace(/</g,'&lt;'))}
   else if(d.x&&/^tr:/.test(d.x))translateTo(d.x.slice(3));
+  else if(d.x&&/^zm:/.test(d.x)){let v=d.x.slice(3);if(v==='ask'){v=prompt('Masshtab (%), 30–300:',Math.round(curZoom()*100));if(!v)return}setZoom(+v)}
   else if(d.x&&/^(qt|ts|wa|sg):/.test(d.x)){const[k,v]=d.x.split(':');if(k==='qt')quickTable(v);else if(k==='ts')tblStyle(v);else if(k==='wa')waInsert(v);else signInsert(v)}
   else if(d.x&&/^(ln|wrap|rot):/.test(d.x)){const[k,v]=d.x.split(':');if(k==='ln'){st.ln=v;applyPage();store()}else if(k==='wrap')imgWrap(v);else imgRotate(v)}
   else if(d.x&&/^(bul|num|sort|shade|bd|fx|dl|pdef):/.test(d.x)){const i=d.x.indexOf(':'),k=d.x.slice(0,i),v=d.x.slice(i+1);
